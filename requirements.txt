@@ -1,0 +1,10 @@
+certifi==2019.6.16
+Django==2.2.3
+django-crispy-forms==1.7.2
+django-haystack==2.8.1
+Markdown==3.1.1
+Pillow==6.1.0
+Pygments==2.4.2
+pytz==2019.1
+sqlparse==0.3.0
+Whoosh==2.7.4
