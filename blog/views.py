@@ -1,6 +1,7 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404,render
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
+from django.db.models import Q
 
 from .models import Post, Category, Tag
 from comments.form import CommentForm
@@ -228,3 +229,21 @@ class PostDetailView(DetailView):
         })
 
         return context
+
+
+def search(request):
+    """ search for the post that contain keyword """
+    q = request.GET.get('q')
+
+    error_msg = ''
+
+    if not q:
+
+        error_msg = "Please enter a keyword"
+
+        return render(request, 'blog/index.html', {'error_msg': error_msg})
+
+    post_list = Post.objects.filter(Q(title__icontains=q) | Q(body__icontains=q))
+
+    return render(request, 'blog/index.html', {'error_msg': error_msg,
+                                               'post_list': post_list})

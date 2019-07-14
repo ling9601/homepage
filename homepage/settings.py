@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog',
     'comments',
+    'haystack',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +130,13 @@ if not DEBUG:
     # the folder where the static files
     # will be stored after using manage.py collectstatic
     STATIC_ROOT=os.path.join(BASE_DIR,'static')
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    },
+}
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 3
+# update index whenever data update
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
