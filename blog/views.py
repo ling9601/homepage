@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
+from django.views.generic import ListView, DetailView
 
 from .models import Post, Category
 from comments.form import CommentForm
@@ -8,61 +9,86 @@ from comments.form import CommentForm
 import markdown
 
 
-def index(request):
+class IndexView(ListView):
+    model = Post
 
-    post_list = Post.objects.all()
+    template_name = 'blog/index.html'
 
-    return render(request, 'blog/index.html', context={'post_list': post_list})
-
-
-def detail(request, pk):
-
-    post = get_object_or_404(Post, pk=pk)
-
-    post.increase_view()
-
-    post.body = markdown.markdown(post.body,
-                                  extensions=[
-                                      'markdown.extensions.extra',
-                                      'markdown.extensions.codehilite',
-                                      'markdown.extensions.toc',
-                                  ])
-    form = CommentForm()
-
-    comment_list = post.comment_set.all()
-
-    context = {
-        'post': post,
-        'form': form,
-        'comment_list': comment_list,
-    }
-
-    return render(request, 'blog/detail.html', context=context)
+    context_object_name = 'post_list'
 
 
-def archives(request, year, month):
+class PostDetailView(DetailView):
+    model = Post
 
-    post_list = Post.objects.filter(created_time__year=year,
-                                    created_time__month=month
-                                    )
+    template_name = 'blog/detail.html'
 
-    return render(request, 'blog/index.html', context={'post_list': post_list})
+    context_object_name = 'post'
+
+    def get(self, request, *args, **kwargs):
+        """ count number of views """
+        response = super(PostDetailView, self).get(request, *args, **kwargs)
+
+        self.object.increase_views()
+
+        return response
+
+    def get_object(self, queryset=None):
+        """ supprot markdown """
+        post = super(PostDetailView, self).get_object(queryset=queryset)
+
+        post.body = markdown.markdown(post.body,
+                                      extensions=[
+                                          'markdown.extensions.extra',
+                                          'markdown.extensions.codehilite',
+                                          'markdown.extensions.toc',
+                                      ])
+        return post
+
+    def get_context_data(self, **kwargs):
+        """ extra context_data """
+        context = super(PostDetailView, self).get_context_data(**kwargs)
+
+        context.update({
+            'form': CommentForm,
+            'comment_list': self.object.comment_set.all()
+        })
+
+        return context
 
 
-def category(request, pk):
+class ArchivesView(ListView):
+    model = Post
 
-    cate = get_object_or_404(Category, pk=pk)
+    template_name = 'blog/index.html'
 
-    post_list = Post.objects.filter(category=cate)
+    context_object_name = 'post_list'
 
-    return render(request, 'blog/index.html', context={'post_list': post_list})
+    def get_queryset(self):
+        return super(ArchivesView, self).get_queryset().filter(created_time__year=self.kwargs.get('year'),
+                                                               created_time__month=self.kwargs.get('month'))
 
-def author(request,pk):
 
-    author=get_object_or_404(User,pk=pk)
+class CategoryView(ListView):
+    model = Post
 
-    post_list=Post.objects.filter(author=author)
+    template_name = 'blog/index.html'
 
-    return render(request,'blog/index.html',context={'post_list':post_list})
+    context_object_name = 'post_list'
 
-# Create your views here.
+    def get_queryset(self):
+        cate = get_object_or_404(Category, pk=self.kwargs.get('pk'))
+
+        return super(CategoryView, self).get_queryset().filter(category=cate)
+
+
+class AuthorView(ListView):
+    model = Post
+
+    template_name = 'blog/index.html'
+
+    context_object_name = 'post_list'
+
+    def get_queryset(self):
+        author = get_object_or_404(User, pk=self.kwargs.get('pk'))
+
+        return super(AuthorView, self).get_queryset().filter(author=author)

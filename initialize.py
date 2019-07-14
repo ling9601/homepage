@@ -1,0 +1,23 @@
+import os
+
+"""
+use it to refresh database
+and create a superuser and a normal user
+"""
+
+if os.path.isfile('db.sqlite3'):
+    os.remove('db.sqlite3')
+    print("delete 'db.sqlite3'\n")
+
+os.system('python manage.py makemigrations')
+
+os.system('python manage.py migrate --run-syncdb')
+
+os.system("echo \"from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'pass')\" | python manage.py shell")
+
+print("\ncreate superuser('admin','admin@example.com','pass')")
+
+os.system("echo \"from django.contrib.auth.models import User; User(username='user-1', password='pass').save()\" | python manage.py shell")
+
+print("\ncreate user-1 (username='user-1',password='pass')")
+
