@@ -65,6 +65,6 @@ class Post(models.Model):
             # turn markdown style text into html,and strip tags of html
             self.excerpt = strip_tags(md.convert(self.body))[:54]
 
-        super(Post, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 # Create your models here.
