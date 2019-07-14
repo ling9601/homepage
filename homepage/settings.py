@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'blog',
     'comments',
     'haystack',
+    'ImageHost',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -131,6 +133,7 @@ if not DEBUG:
     # will be stored after using manage.py collectstatic
     STATIC_ROOT=os.path.join(BASE_DIR,'static')
 
+# set haystack
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
@@ -140,3 +143,10 @@ HAYSTACK_CONNECTIONS = {
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 3
 # update index whenever data update
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
+# set imagehost
+MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+MEDIA_URL='/media/'
+DOMAIN_NAME='127.0.0.1:8000'
+
+

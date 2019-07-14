@@ -1,4 +1,5 @@
 import os
+import shutil
 
 """
 use it to refresh database
@@ -7,11 +8,17 @@ and create a superuser and a normal user
 
 if os.path.isfile('db.sqlite3'):
     os.remove('db.sqlite3')
-    print("delete 'db.sqlite3'\n")
+    print("delete file 'db.sqlite3'\n")
+
+if os.path.isdir('whoosh_index'):
+    shutil.rmtree('whoosh_index')
+    print("delete dir 'whoosh_index'\n")
 
 os.system('python manage.py makemigrations')
 
 os.system('python manage.py migrate --run-syncdb')
+
+os.system('python manage.py rebuild_index')
 
 os.system("echo \"from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'pass')\" | python manage.py shell")
 
