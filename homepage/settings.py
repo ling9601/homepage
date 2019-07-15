@@ -140,4 +140,4 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 # set imagehost
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-DOMAIN_NAME = '127.0.0.1:8000'
+DOMAIN_NAME = 'www.lingxt.online'

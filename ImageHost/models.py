@@ -14,6 +14,5 @@ class Image(models.Model):
         super().delete(*args,**kwargs)
 
     def get_picture_absolute_url(self):
-        print(os.path.join(settings.DOMAIN_NAME,self.picture.url))
-        return os.path.join(settings.DOMAIN_NAME,self.picture.url)
-
+        print(settings.DOMAIN_NAME+self.picture.url)
+        return settings.DOMAIN_NAME+self.picture.url
