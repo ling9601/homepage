@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -23,10 +22,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'igo7^m=i^pl1*(7*kzi&1un=2tn5vo-r5e7r2+=9igz7487l)8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.lingxt.online']
 
 # Application definition
 
@@ -59,7 +57,7 @@ ROOT_URLCONF = 'homepage.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,7 +72,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'homepage.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -84,7 +81,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -104,7 +100,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -118,7 +113,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
@@ -127,11 +121,10 @@ USE_TZ = True
 # but make sure the app ared installed
 STATIC_URL = '/static/'
 
-if not DEBUG:
-    # only required for deployment,
-    # the folder where the static files
-    # will be stored after using manage.py collectstatic
-    STATIC_ROOT=os.path.join(BASE_DIR,'static')
+# only required for deployment,
+# the folder where the static files
+# will be stored after using manage.py collectstatic
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # set haystack
 HAYSTACK_CONNECTIONS = {
@@ -145,8 +138,6 @@ HAYSTACK_SEARCH_RESULTS_PER_PAGE = 3
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 # set imagehost
-MEDIA_ROOT=os.path.join(BASE_DIR,'media')
-MEDIA_URL='/media/'
-DOMAIN_NAME='127.0.0.1:8000'
-
-
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+DOMAIN_NAME = '127.0.0.1:8000'

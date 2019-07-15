@@ -2,8 +2,8 @@ import os
 import shutil
 
 """
-use it to refresh database
-and create a superuser and a normal user
+use it to create database and index for search
+and create a superuser ,a normal user
 """
 
 if os.path.isfile('db.sqlite3'):
