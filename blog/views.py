@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404,render
-from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
 
 from .models import Post, Category, Tag
 from comments.form import CommentForm
+from users.models import User
 
 import markdown
 

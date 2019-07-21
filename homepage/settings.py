@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'haystack',
     'ImageHost',
     'crispy_forms',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +142,10 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 DOMAIN_NAME = 'www.lingxt.online'
+
+# using customize user model
+AUTH_USER_MODEL = 'users.User'
+
+# default redirected destination when there no 'next'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'

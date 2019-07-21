@@ -18,11 +18,17 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from users import views
+
 urlpatterns = [
+    path('',views.index,name='index'),
     path('admin/', admin.site.urls),
     path('blog/',include('blog.urls')),
     path('comments/',include('comments.urls')),
     path('ImageHost/',include('ImageHost.urls')),
+    path('users/',include('users.urls')),
+    # build in urls for registration
+    path('users/',include('django.contrib.auth.urls')),
 ]
 
 # open access to media file,only under DEBUG mode
