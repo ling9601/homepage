@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import RegisterForm
+from django.contrib.auth import authenticate, login
 
 
 def index(request):
@@ -10,7 +11,6 @@ def register(request):
     # While GET , the value of next is passed by url ,like /?next=value
     # while POST , the value of next is passed by form, like <input type="hidden" name="next" value="{{ next }}"/>
     redirect_to = request.POST.get('next', request.GET.get('next', ''))
-    print(redirect_to)
     if request.method == 'POST':
 
         form = RegisterForm(request.POST)
@@ -18,6 +18,10 @@ def register(request):
         if form.is_valid():
             form.save()
 
+            # automatically login after registration
+            new_user = authenticate(username=form.cleaned_data['username'],
+                                    password=form.cleaned_data['password1'])
+            login(request, new_user)
             if redirect_to:
                 return redirect(redirect_to)
             else:
