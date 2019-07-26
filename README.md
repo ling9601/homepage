@@ -1,7 +1,7 @@
 # homepage
 Personal web application
 ## online demo
-- http://www.lingxt.online/ImageHost/
+- http://www.lingxt.online/imagehost/
 - http://www.lingxt.online/blog/
 # Function
 - blog

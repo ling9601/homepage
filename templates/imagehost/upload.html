@@ -1,4 +1,4 @@
-{% extends 'ImageHost/base.html' %}
+{% extends 'imagehost/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
   <form method="post" enctype="multipart/form-data">
@@ -7,5 +7,5 @@
     <button type="submit">Upload</button>
   </form>
 
-  <p><a href="{% url 'ImageHost:ImageList' %}">Return to home</a></p>
+  <p><a href="{% url 'imagehost:ImageList' %}">Return to home</a></p>
 {% endblock %}

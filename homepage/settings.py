@@ -38,9 +38,10 @@ INSTALLED_APPS = [
     'blog',
     'comments',
     'haystack',
-    'ImageHost',
+    'imagehost',
     'crispy_forms',
     'users',
+    'home',
 ]
 
 MIDDLEWARE = [

@@ -1,4 +1,4 @@
-{% extends 'ImageHost/base.html' %}
+{% extends 'imagehost/base.html' %}
 {% block content %}
 
     <h2>Pictures</h2>
@@ -31,7 +31,7 @@
                         </a>
                     <td>
                     <td>
-                        <form method="POST" action="{% url 'ImageHost:delete' image.pk %}">
+                        <form method="POST" action="{% url 'imagehost:delete' image.pk %}">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>
