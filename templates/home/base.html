@@ -12,10 +12,13 @@
   <title>Lxt</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'home/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
   <!-- Custom styles for this template -->
-  <link href="{% static 'css/simple-sidebar.css' %}" rel="stylesheet">
+  <link href="{% static 'home/css/simple-sidebar.css' %}" rel="stylesheet">
+
+  {% block head %}
+  {% endblock head %}
 
 </head>
 
@@ -28,7 +31,7 @@
       <div class="sidebar-heading">Start Bootstrap </div>
       <div class="list-group list-group-flush">
         <a href="#" class="list-group-item list-group-item-action bg-light">Dashboard</a>
-        <a href="#" class="list-group-item list-group-item-action bg-light">Shortcuts</a>
+        <a href="{% url 'imagehost:index' %}" class="list-group-item list-group-item-action bg-light">ImageHost</a>
         <a href="#" class="list-group-item list-group-item-action bg-light">Overview</a>
         <a href="#" class="list-group-item list-group-item-action bg-light">Events</a>
         <a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>
@@ -81,8 +84,11 @@
   <!-- /#wrapper -->
 
   <!-- Bootstrap core JavaScript -->
-  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'home/vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'home/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  {% block rear %}
+  {% endblock rear %}
 
   <!-- Menu Toggle Script -->
   <script>

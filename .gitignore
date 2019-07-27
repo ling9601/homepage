@@ -108,3 +108,7 @@ venv.bak/
 
 # django
 whoosh_index/
+media/
+
+# VSCode
+.vscode/

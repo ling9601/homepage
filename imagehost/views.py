@@ -4,10 +4,10 @@ from .models import Image
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 
-class ImageList(ListView):
+class Index(ListView):
     model = Image
-    template_name = 'imagehost/ImageList.html'
-    context_object_name = 'ImageList'
+    template_name = 'imagehost/index.html'
+    context_object_name = 'imagelist'
 
 class ImageCreate(CreateView):
     model = Image
@@ -20,7 +20,7 @@ def delete(request,pk):
     if request.method=='POST':
         image=Image.objects.get(pk=pk)
         image.delete()
-    return redirect(reverse_lazy('imagehost:ImageList'))
+    return redirect(reverse_lazy('imagehost:imagelist'))
 
 def test(request):
     return render(request,'imagehost/test.html')

@@ -1,0 +1,28 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block head %}
+
+<link href="{% static 'imagehost/css/custom.css' %}" rel="stylesheet">
+
+{% endblock head %}
+
+{% block main %}
+<h2>Pictures</h2>
+<div class="container page-top">
+
+    <div class="row">
+        {% for image in imagelist %}
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb img-wrap">
+                <a href="{{ image.picture.url }}" >
+                    <img  src="{{ image.picture.url}}" class="zoom img-fluid "  alt="">
+                </a>
+            </div>
+        {% empty %}
+        <b>No imge</b>
+        {% endfor %}
+    </div>
+        
+</div>
+
+{% endblock main %}
