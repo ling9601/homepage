@@ -1,6 +1,5 @@
 body {
     background-color:#1d1d1d !important;
-    /* font-family: "Asap", sans-serif; */
     color:#989898;
   }
   
@@ -9,28 +8,22 @@ body {
 }
 
 .page-top{
-    margin-top:85px;
+    margin-top:50px;
 }
   
      
 img.zoom {
     width: 100%;
-    height: 200px;
+    height: auto;
     border-radius:5px;
     object-fit:cover;
 }
 
-.img-wrap {
+  .img-wrap {
     overflow: hidden;
     position: relative;
   }
-/* .img-wrap:after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(255,255,255,0.3);
-    opacity: 0;
-  } */
+  
   .img-wrap img {
     transition: transform .25s;
     width: 100%;
