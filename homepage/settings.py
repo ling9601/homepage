@@ -155,3 +155,6 @@ AUTH_USER_MODEL = 'users.User'
 # default redirected destination when there no 'next'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
+
+# fix nginx 403 problem when serving media file over 2.5m
+FILE_UPLOAD_PERMISSIONS=0o640
