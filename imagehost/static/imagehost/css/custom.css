@@ -1,3 +1,4 @@
+/* for image list */
 body {
     background-color:#1d1d1d !important;
     color:#989898;
@@ -31,6 +32,33 @@ img.zoom {
   .img-wrap:hover img {
     transform: scale(1.2);
   }
+
+/* for image upload and preview */
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: black;
+    cursor: inherit;
+    display: block;
+}
+
+#img-upload{
+    width: 100%;
+}
+
+
 
 
   /* reference:https://stackoverflow.com/questions/43816331/bootstrap-4-card-image-zoom */

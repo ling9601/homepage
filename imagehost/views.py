@@ -4,6 +4,8 @@ from .models import Image
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 
+from .form import ImageCreateForm
+
 class Index(ListView):
     model = Image
     template_name = 'imagehost/index.html'
@@ -12,7 +14,7 @@ class Index(ListView):
 class ImageCreate(CreateView):
     model = Image
     template_name = 'imagehost/upload.html'
-    fields = ['title','picture']
+    form_class=ImageCreateForm
     #upload成功後跳轉
     success_url = reverse_lazy('imagehost:upload')
 

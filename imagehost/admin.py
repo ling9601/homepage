@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Image
+from .models import Image,Tag
 
 admin.site.register(Image)
-# Register your models here.
+admin.site.register(Tag)

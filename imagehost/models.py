@@ -1,13 +1,17 @@
 from django.db import models
-from django.conf import settings
 
-import os
+class Tag(models.Model):
+    name=models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.name
 class Image(models.Model):
     #根据settings中的MEDIA_ROOT来存放
     picture=models.ImageField(upload_to='pictures')
     title=models.CharField(max_length=100,blank=True)
     uploaded_time=models.DateField(auto_now_add=True)
+
+    tags=models.ManyToManyField(Tag,blank=True)
 
     def delete(self, *args,**kwargs):
         self.picture.delete()
