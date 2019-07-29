@@ -58,6 +58,22 @@ img.zoom {
     width: 100%;
 }
 
+/* for image hover show text */
+.overlay {
+    position: absolute;
+    top: 90%;
+    left: 0%;
+    height: 10%;
+    width: 100%;
+    opacity: 0;
+    transition: .5s ease;
+    /* background-color: #008CBA; */
+}
+
+.img-wrap:hover .overlay{
+    background: rgba(43, 41, 41, 0.4);
+    opacity: 1;
+}
 
 
 
