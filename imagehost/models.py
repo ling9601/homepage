@@ -82,6 +82,7 @@ class Image(models.Model):
         self.thumb.delete()
         super().delete(*args,**kwargs)
 
-    # def get_picture_absolute_url(self):
-    #     print(settings.DOMAIN_NAME+self.picture.url)
-    #     return settings.DOMAIN_NAME+self.picture.url
+    def increase_views(self):
+        self.views += 1
+        self.save(update_fields=['views'])
+

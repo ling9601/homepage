@@ -1,0 +1,13 @@
+{% extends 'imagehost/base.html' %}
+{% load static %}
+
+
+{% block main %}
+
+<div class="container-fluid " style="height: 100%;min-height: 100%">
+    <div class="row d-flex flex-wrap align-items-center h-100">
+        <img src="{{ image.picture.url}}" class="img-fluid "  alt="">
+    </div>
+</div>
+
+{% endblock main %}
