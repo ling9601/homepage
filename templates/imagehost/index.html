@@ -16,10 +16,12 @@
     <div class="row">
         {% for image in imagelist %}
             <div class="col-lg-3 col-md-4 col-sm-6 thumb img-wrap">
-                    <img  src="{{ image.picture.url}}" class="zoom img-fluid "  alt="">
-                    <svg class="overlay" viewBox="0 0 56 18">
-                        <text fill="white"  x="-15" y="15">{{ image.picture.width }} x {{ image.picture.height }}</text>
-                    </svg>
+                <a href="{{ image.picture.url }}" >
+                    <img  src="{{ image.thumbnail.url}}" class="zoom img-fluid "  alt="">
+                </a>
+                <svg class="overlay" viewBox="0 0 56 18">
+                    <text fill="white"  x="-15" y="15">{{ image.picture.width }} x {{ image.picture.height }}</text>
+                </svg>
             </div>
         {% empty %}
         <b>No imge</b>

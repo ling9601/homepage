@@ -17,12 +17,15 @@ class ImageCreateForm(forms.ModelForm):
 
     class Meta(object):
         model=Image
-        fields=['title','tags','picture']
+        fields=['title','category','tags','picture']
 
         widgets = {
             'title': forms.TextInput(
 				attrs={'class': 'form-control'}
 				),
+            'category': forms.Select(
+                attrs={'class': 'form-control'}
+                ),
             'tags': forms.SelectMultiple(
                 attrs={'class': 'selectpicker form-control','data-live-search':'true',}
                 ),

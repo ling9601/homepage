@@ -148,6 +148,7 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 DOMAIN_NAME = 'www.lingxt.online'
+THUMB_SIZE = (600,400)
 
 # using customize user model
 AUTH_USER_MODEL = 'users.User'
