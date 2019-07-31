@@ -4,9 +4,15 @@
 
 {% block main %}
 
-<div class="d-flex align-items-center justify-content-center" style="min-height: 100vh">
+<div class="d-flex align-items-center justify-content-center" style="min-height: 100vh" id="image">
     <img src="{{ image.picture.url}}" class="img-fluid"  alt="">
 </div>
 
 
 {% endblock main %}
+
+{% block rear %}
+<script>
+    window.location.hash='#image';
+</script>
+{% endblock rear %}
