@@ -1,24 +1,112 @@
 {% extends 'imagehost/base.html' %}
 {% load static %}
+{% load image_tags %}
 
 {% block head %}
 <link rel="stylesheet" href="{% static 'imagehost/css/custom.css' %}">
 <style>
     /* make sidebar closed as default */
+
     #sidebar-wrapper {
         margin-left: -15rem;
     }
     #wrapper.toggled #sidebar-wrapper {
         margin-left: 0;
     }
+
+    #img-detail-wrapper {
+        height: 100vh;
+    }
+
+    #img-sidebar-wrapper {
+        background-color: rgb(29, 28, 28);
+        min-width: 15rem;
+        width: 15rem;
+        margin-left: 0;
+        -webkit-transition: margin .25s ease-out;
+        -moz-transition: margin .25s ease-out;
+        -o-transition: margin .25s ease-out;
+        transition: margin .25s ease-out;
+    }
+    #img-wrapper {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+    .card {
+        background: inherit;
+    }
+    .table{
+        background: inherit;
+    }
+    #sidebar-toggle {
+        position: relative;
+        left: 1.8rem;
+    }
+
+    #img-detail-wrapper.toggled #img-sidebar-wrapper {
+        margin-left: -15rem;
+    }
+    
 </style>
 
 {% endblock head %}
 
 {% block main %}
 
-<div class="d-flex align-items-center justify-content-center" style="height: 100vh;margin-left:50px;margin-right: 50px" id="image">
-    <img src="{{ image.picture.url}}" class="img-fluid"   alt="">
+<div class="d-flex" id="img-detail-wrapper">
+    <div id='img-sidebar-wrapper' class="p-3">
+
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn p-0 bg-light" id="sidebar-toggle"><span style='font-size:2rem;'>&#8594;</span></button>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">TAG</h5>
+                {% for tag in image.tags.all %}
+                <a href="#0" class="badge badge-secondary">#{{ tag.name }}</a>
+                {% empty %}
+                No tag
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body pb-0">
+                <h5 class="card-title">PROPERTIES</h5>
+            </div>
+            <table class="table table-borderless table-dark text-center ">
+                <tbody>
+                    <tr>
+                        <th>Uploader</th>
+                        <th>{{ user }}</th>
+                    </tr>
+                    <tr>
+                        <th>Favorites</th>
+                        <th>{{ image.favorites }}</th>
+                    </tr>
+                    <tr>
+                        <th>Resolution</th>
+                        <th>{{ image.picture.width }}x{{ image.picture.height }}</th>
+                    </tr>
+                    <tr>
+                        <th>Size</th>
+                        <th>{{ image.picture.size |BytesToMB|floatformat:2}} MB</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text bg-dark text-light border-0" id="basic-addon1">URL</span>
+            </div>
+            <input type="text" class="form-control bg-dark text-light " placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" value="{{ image.picture.url }}">
+        </div>
+    </div>
+
+    <div class="align-self-center" id="img-wrapper">
+            <img src="{{ image.picture.url}}" class="img-fluid"  id="image"  alt="">
+    </div>
 </div>
 
 
@@ -27,5 +115,10 @@
 {% block rear %}
 <script>
     window.location.hash='#image';
+    $('#sidebar-toggle').click(function(e){
+        e.preventDefault();
+        $("#img-detail-wrapper").toggleClass("toggled");
+        console.log("fuck");
+    })
 </script>
 {% endblock rear %}

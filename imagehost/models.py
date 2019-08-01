@@ -1,5 +1,6 @@
 from django.db import models
 from homepage.settings import THUMB_SIZE
+from users.models import User
 
 import PIL.Image,PIL.ImageOps
 from io import BytesIO
@@ -36,6 +37,8 @@ class Image(models.Model):
     favorites=models.PositiveIntegerField(default=0)
 
     thumbnail=models.ImageField(upload_to='thumbs',editable=False)
+
+    uploader=models.ForeignKey(User,on_delete=models.CASCADE)
 
     
     def save(self,*args,**kwargs):

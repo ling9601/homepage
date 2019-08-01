@@ -1,8 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, HttpResponse
 from django.views.generic import ListView, CreateView, DetailView
 from .models import Image
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 
 from .form import ImageCreateForm
 
@@ -13,12 +15,15 @@ class Index(ListView):
     context_object_name = 'imagelist'
 
 
-class ImageCreateView(CreateView):
+class ImageCreateView(LoginRequiredMixin, CreateView):
     model = Image
     template_name = 'imagehost/upload.html'
     form_class = ImageCreateForm
-    # upload成功後跳轉
     success_url = reverse_lazy('imagehost:upload')
+
+    def form_valid(self, form):
+        form.instance.uploader=self.request.user
+        return super(ImageCreateView, self).form_valid(form)
 
 
 class ImageDetailView(DetailView):
@@ -39,5 +44,6 @@ def delete(request, pk):
     return redirect(reverse_lazy('imagehost:imagelist'))
 
 
+@login_required
 def test(request):
-    return render(request, 'imagehost/test.html')
+    return HttpResponse("Hello world")
