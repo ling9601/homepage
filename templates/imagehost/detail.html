@@ -1,11 +1,24 @@
 {% extends 'imagehost/base.html' %}
 {% load static %}
 
+{% block head %}
+<link rel="stylesheet" href="{% static 'imagehost/css/custom.css' %}">
+<style>
+    /* make sidebar closed as default */
+    #sidebar-wrapper {
+        margin-left: -15rem;
+    }
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: 0;
+    }
+</style>
+
+{% endblock head %}
 
 {% block main %}
 
-<div class="d-flex align-items-center justify-content-center" style="min-height: 100vh" id="image">
-    <img src="{{ image.picture.url}}" class="img-fluid"  alt="">
+<div class="d-flex align-items-center justify-content-center" style="height: 100vh;margin-left:50px;margin-right: 50px" id="image">
+    <img src="{{ image.picture.url}}" class="img-fluid"   alt="">
 </div>
 
 
