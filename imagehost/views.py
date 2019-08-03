@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, HttpResponse
-from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic import ListView, CreateView, DetailView,DeleteView
 from .models import Image
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
@@ -22,11 +22,16 @@ class ImageCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('imagehost:upload')
 
     def form_valid(self, form):
+
         form.instance.uploader=self.request.user
+
+        if not form.instance.make_thumbnail():
+            raise Exception('Could not create thumbnail - is the file type valid?')
+
         return super(ImageCreateView, self).form_valid(form)
 
 
-class ImageDetailView(DetailView):
+class ImageDetailView(LoginRequiredMixin,DetailView):
     model = Image
     template_name = 'imagehost/detail.html'
     context_object_name = 'image'
@@ -34,7 +39,12 @@ class ImageDetailView(DetailView):
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
         self.object.increase_views()
+        print(self.object.uploader)
         return response
+
+class ImageDeleteView(LoginRequiredMixin,DeleteView):
+    model=Image
+    success_url=reverse_lazy('imagehost:index')
 
 
 def delete(request, pk):

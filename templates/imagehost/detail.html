@@ -28,10 +28,7 @@
         -o-transition: margin .25s ease-out;
         transition: margin .25s ease-out;
     }
-    #img-wrapper {
-        margin-left: 1rem;
-        margin-right: 1rem;
-    }
+
     .card {
         background: inherit;
     }
@@ -41,6 +38,7 @@
     #sidebar-toggle {
         position: relative;
         left: 1.8rem;
+        font-size:2rem;
     }
 
     #img-detail-wrapper.toggled #img-sidebar-wrapper {
@@ -57,7 +55,7 @@
     <div id='img-sidebar-wrapper' class="p-3">
 
         <div class="d-flex justify-content-end">
-            <button type="button" class="btn p-0 bg-light" id="sidebar-toggle"><span style='font-size:2rem;'>&#8594;</span></button>
+            <button type="button" class="btn p-0 bg-light" id="sidebar-toggle"><span>&#8594;</span></button>
         </div>
 
         <div class="card">
@@ -82,6 +80,10 @@
                         <th>{{ user }}</th>
                     </tr>
                     <tr>
+                        <th>Category</th>
+                        <th>{{ image.category }}</th>
+                    </tr>
+                    <tr>
                         <th>Favorites</th>
                         <th>{{ image.favorites }}</th>
                     </tr>
@@ -100,12 +102,17 @@
             <div class="input-group-prepend">
                 <span class="input-group-text bg-dark text-light border-0" id="basic-addon1">URL</span>
             </div>
-            <input type="text" class="form-control bg-dark text-light " placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" value="{{ image.picture.url }}">
+            <input type="text" class="form-control bg-dark text-light " value="{{ image.picture.url }}">
         </div>
+        {% if user.pk == image.uploader.pk %}
+        <div class="text-center mt-4">
+            <a href="{% url 'imagehost:delete' image.pk %}" class="btn btn-danger">Delete</a>
+        </div>
+        {% endif %}
     </div>
-
-    <div class="align-self-center" id="img-wrapper">
-            <img src="{{ image.picture.url}}" class="img-fluid"  id="image"  alt="">
+    <!-- grow to fill all available space;vertical center;horizontal center -->
+    <div class="flex-grow-1 align-self-center text-center " id="img-wrapper">
+            <img src="{{ image.picture.url}}" class="img-fluid pr-3 pl-3"  id="image"  alt="">
     </div>
 </div>
 

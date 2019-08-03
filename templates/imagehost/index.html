@@ -16,7 +16,7 @@
     <div class="row">
         {% for image in imagelist %}
             <div class="col-lg-3 col-md-4 col-sm-6 thumb img-wrap">
-                <a href="{% url 'imagehost:detail' image.pk%}" >
+                <a href="{% url 'imagehost:detail' image.pk %}" >
                     <img  src="{{ image.thumbnail.url}}" class="zoom img-fluid "  alt="">
                 </a>
                 <svg class="overlay" viewBox="0 0 56 18">

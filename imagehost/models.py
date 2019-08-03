@@ -41,14 +41,6 @@ class Image(models.Model):
     uploader=models.ForeignKey(User,on_delete=models.CASCADE)
 
     
-    def save(self,*args,**kwargs):
-
-        if not self.make_thumbnail():
-            # set to a default thumbnail
-            raise Exception('Could not create thumbnail - is the file type valid?')
-
-        super(Image, self).save(*args, **kwargs)
-    
     def make_thumbnail(self):
 
         image = PIL.Image.open(self.picture)
@@ -82,7 +74,7 @@ class Image(models.Model):
 
     def delete(self, *args,**kwargs):
         self.picture.delete()
-        self.thumb.delete()
+        self.thumbnail.delete()
         super().delete(*args,**kwargs)
 
     def increase_views(self):
