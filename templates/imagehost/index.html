@@ -1,11 +1,56 @@
 {% extends 'imagehost/base.html' %}
 {% load static %}
+{% load image_tags %}
+
+{% block head %}
+
+<link href="{% static 'imagehost/css/custom.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'imagehost/css/bootstrap-select.min.css' %}">
+
+{% endblock head %}
 
 {% block main %}
 
 <div class="container-fluid">
     <div class="row">
-        <a href="{% url 'imagehost:upload' %}" class="btn btn-dark">Upload picture</a>
+        <div class="col-3">
+            <a href="{% url 'imagehost:upload' %}" class="btn btn-dark">Upload picture</a>
+        </div>
+        <div class="col-6">
+            <form action="{% url 'imagehost:search' %}" method="get" id="searchForm" class="input-group">
+                <div class="">
+                    <select name="category" id='category' class="selectpicker">
+                        <option value="" selected disabled>Category</option>
+                        {% get_categories as category_list %}
+                        {% for category in category_list %}
+                        <option value="{{ category.pk }}">{{ category }} ({{ category.num_images }})</option>
+                        {% empty %}
+                        {% endfor %}
+                    </select>
+                    <select name="tags" class="selectpicker" multiple>
+                        <option value="" selected disabled>Tags</option>
+                        {% get_tags as tag_list %}
+                        {% for tag in tag_list %}
+                        <option value="{{ tag.pk }}">{{ tag }} ({{ tag.num_images}})</option>
+                        {% empty %}
+                        {% endfor %}
+                    </select>
+                    <select name="uploader" class="selectpicker">
+                        <option value="" selected disabled>Uploader</option>
+                        {% get_uploaders as uploader_list %}
+                        {% for uploader in uploader_list %}
+                        <option value="{{ uploader.pk }}">{{ uploader }} ({{ uploader.num_images}})</option>
+                        {% empty %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="text" class="form-control" name="x" placeholder="Search term...">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                    <button class="btn btn-secondary" type="reset" id='resetAnchor'>reset</button>
+                </span>
+            </form><!-- end form -->
+        </div>
     </div>
 </div>
 
@@ -15,14 +60,14 @@
     <hr class="bg-secondary">
     <div class="row">
         {% for image in image_list %}
-            <div class="col-lg-3 col-md-4 col-sm-6 thumb img-wrap">
-                <a href="{% url 'imagehost:detail' image.pk %}" >
-                    <img  src="{{ image.thumbnail.url}}" class="zoom img-fluid "  alt="">
-                </a>
-                <svg class="overlay" viewBox="0 0 56 18">
-                    <text fill="white"  x="-15" y="15">{{ image.picture.width }} x {{ image.picture.height }}</text>
-                </svg>
-            </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 thumb img-wrap">
+            <a href="{% url 'imagehost:detail' image.pk %}">
+                <img src="{{ image.thumbnail.url}}" class="zoom img-fluid " alt="">
+            </a>
+            <svg class="overlay" viewBox="0 0 56 18">
+                <text fill="white" x="-15" y="15">{{ image.picture.width }} x {{ image.picture.height }}</text>
+            </svg>
+        </div>
         {% empty %}
         <b>No imge</b>
         {% endfor %}
@@ -30,6 +75,10 @@
 </div>
 
 {% endblock main %}
+
+{% block rear %}
+<script src="{% static 'imagehost/js/bootstrap-select.min.js' %}"></script>
+{% endblock rear %}
 
 
 <!-- https://css-tricks.com/fitting-text-to-a-container/ -->

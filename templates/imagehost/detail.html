@@ -5,16 +5,19 @@
 {% block head %}
 <link rel="stylesheet" href="{% static 'imagehost/css/custom.css' %}">
 
-<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
+<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css'
+    integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
 
 <style>
     /* make sidebar closed as default */
     #sidebar-wrapper {
         margin-left: -15rem;
     }
+
     #wrapper.toggled #sidebar-wrapper {
         margin-left: 0;
     }
+
     /* make sidebar closed as default */
 
 
@@ -30,24 +33,27 @@
         -o-transition: margin .25s ease-out;
         transition: margin .25s ease-out;
     }
+
     #img-sidebar-wrapper #sidebar-toggle-button {
         position: relative;
         right: 1.8rem;
-        font-size:2rem;
+        font-size: 2rem;
     }
+
     #img-detail-wrapper.toggled #img-sidebar-wrapper {
         margin-right: -15rem;
     }
+
     /* img-sidebar-wrapper */
 
     .card {
         background: inherit;
     }
 
-    .table{
+    .table {
         background: inherit;
     }
-    
+
     #img-detail-wrapper {
         height: 100vh;
     }
@@ -61,69 +67,97 @@
 
     <!-- grow to fill all available space;vertical center;horizontal center -->
     <div class="flex-grow-1 align-self-center text-center " id="img-wrapper">
-            <img src="{{ image.picture.url}}" class="img-fluid pr-3 pl-3"  id="image"  alt="">
+        <img src="{{ image.picture.url}}" class="img-fluid pr-3 pl-3" id="image" alt="">
     </div>
     <div id='img-sidebar-wrapper' class="p-3">
 
-            <div class="d-flex justify-content-start">
-                <button type="button" class="btn p-0 border-0 bg-light" id="sidebar-toggle-button"><i class='fas fa-angle-right'></i></button>
+        <div class="d-flex justify-content-start">
+            <button type="button" class="btn p-0 border-0 bg-light" id="sidebar-toggle-button"><i
+                    class='fas fa-angle-right'></i></button>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">TAG</h5>
+                {% for tag in image.tags.all %}
+                <a href="{% url 'imagehost:tag' tag.pk %}" class="badge badge-secondary">#{{ tag.name }}</a>
+                {% empty %}
+                No tag
+                {% endfor %}
             </div>
-    
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">TAG</h5>
-                    {% for tag in image.tags.all %}
-                    <a href="{% url 'imagehost:tag' tag.pk %}" class="badge badge-secondary">#{{ tag.name }}</a>
-                    {% empty %}
-                    No tag
-                    {% endfor %}
+        </div>
+
+        <div class="card">
+            <div class="card-body pb-0">
+                <h5 class="card-title">PROPERTIES</h5>
+            </div>
+            <table class="table table-borderless table-dark text-center ">
+                <tbody>
+                    <tr>
+                        <th>Uploader</th>
+                        <th><a href="{% url 'imagehost:uploader' image.uploader.pk %}">{{ image.uploader.username }}</a>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Category</th>
+                        {% if image.category %}
+                        <th><a href="{% url 'imagehost:category' image.category.pk %}">{{ image.category }}</a></th>
+                        {% else %}
+                        <th>None</th>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <th>Favorites</th>
+                        <th>{{ image.favorites }}</th>
+                    </tr>
+                    <tr>
+                        <th>Resolution</th>
+                        <th>{{ image.picture.width }}x{{ image.picture.height }}</th>
+                    </tr>
+                    <tr>
+                        <th>Size</th>
+                        <th>{{ image.picture.size |BytesToMB|floatformat:2}} MB</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text bg-dark text-light border-0" id="basic-addon1">URL</span>
+            </div>
+            <input type="text" class="form-control bg-dark text-light " value="{{ image.picture.url }}">
+        </div>
+        {% if user.pk == image.uploader.pk %}
+        <div class="text-center mt-4">
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#DeleteModal">
+                Delete
+            </button>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-primary" id="exampleModalLabel">Delete</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-danger">
+                        Are you sure you want to delete {{ image }} ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <form method="POST" action="{% url 'imagehost:delete' image.pk %}">
+                            {% csrf_token %}
+                            <input class="btn btn-primary" type="submit" value="Confirm">
+                        </form>
+                    </div>
                 </div>
             </div>
-    
-            <div class="card">
-                <div class="card-body pb-0">
-                    <h5 class="card-title">PROPERTIES</h5>
-                </div>
-                <table class="table table-borderless table-dark text-center ">
-                    <tbody>
-                        <tr>
-                            <th>Uploader</th>
-                            <th><a href="{% url 'imagehost:uploader' image.uploader.pk %}">{{ image.uploader.username }}</a></th>
-                        </tr>
-                        <tr>
-                            <th>Category</th>
-                            {% if image.category %}
-                            <th><a href="{% url 'imagehost:category' image.category.pk %}">{{ image.category }}</a></th>
-                            {% else %}
-                            <th>None</th>
-                            {% endif %}
-                        </tr>
-                        <tr>
-                            <th>Favorites</th>
-                            <th>{{ image.favorites }}</th>
-                        </tr>
-                        <tr>
-                            <th>Resolution</th>
-                            <th>{{ image.picture.width }}x{{ image.picture.height }}</th>
-                        </tr>
-                        <tr>
-                            <th>Size</th>
-                            <th>{{ image.picture.size |BytesToMB|floatformat:2}} MB</th>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text bg-dark text-light border-0" id="basic-addon1">URL</span>
-                </div>
-                <input type="text" class="form-control bg-dark text-light " value="{{ image.picture.url }}">
-            </div>
-            {% if user.pk == image.uploader.pk %}
-            <div class="text-center mt-4">
-                <a href="{% url 'imagehost:delete' image.pk %}" class="btn btn-danger">Delete</a>
-            </div>
-            {% endif %}
+        </div>
+        {% endif %}
     </div>
 </div>
 
@@ -132,8 +166,8 @@
 
 {% block rear %}
 <script>
-    window.location.hash='#image';
-    $('#sidebar-toggle-button').click(function(e){
+    window.location.hash = '#image';
+    $('#sidebar-toggle-button').click(function (e) {
         e.preventDefault();
         $("#img-detail-wrapper").toggleClass("toggled");
         $("#img-sidebar-wrapper #sidebar-toggle-button i").toggleClass("fa-angle-left fa-angle-right");
