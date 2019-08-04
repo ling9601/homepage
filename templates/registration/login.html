@@ -21,7 +21,7 @@
     <div class="container">
         <div class="flex-center">
             <div class="unit-1-2 unit-1-on-mobile">
-                <h3>Login</h3>
+                <h1 class="logo"><a href="{% url 'home:index' %}">Home</a></h1>
                 <form class="form" action="{% url 'login' %}" method="post">
                     {% csrf_token %}
                     {{ form.non_field_errors }}
@@ -33,7 +33,7 @@
                             <p class="help text-small text-muted">{{ field.help_text|safe }}</p>
                         {% endif %}
                     {% endfor %}
-                    <button type="submit" class="btn btn-primary btn-block">登录</button>
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
                     <input type="hidden" name="next" value="{{ next }}"/>
                 </form>
                 <div class="flex-left top-gap text-small">

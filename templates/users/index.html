@@ -14,7 +14,7 @@
 <div class="flex-center">
     <div class="container">
         <div>
-            <h1 class="logo"><a href="{% url 'index' %}">Home</a></h1>
+            <h1 class="logo"><a href="{% url 'users:index' %}">Home</a></h1>
             {% if user.is_authenticated %}
             <p>You are already logged in, Welcome!：<a href="#">{{ user.username }}</a></p>
             <button class="btn btn-default"><a href="{% url 'logout' %}?next={{ request.path }}">Logout</a></button>
