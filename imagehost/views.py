@@ -130,7 +130,7 @@ def search(request):
         message += 'Category: {} ;'.format(
             Category.objects.get(pk=search_dict['category'][0]).name)
     if 'tags' in search_dict:
-        query_set = query_set.filter(tags__in=search_dict['tags'])
+        query_set = query_set.filter(tags__in=search_dict['tags']).distinct()
         message += 'Tags: '
         message += ','.join(
             [tag.name for tag in Tag.objects.filter(pk__in=search_dict['tags'])])
@@ -140,11 +140,11 @@ def search(request):
         message += 'Uploader: {} ;'.format(
             User.objects.get(pk=search_dict['uploader'][0]).username)
 
-    x=request.GET.get('x')
-    print('before: ',query_set)
+    x = request.GET.get('x')
+    message += 'Search term: {}'.format(x)
     if x:
-        query_set=query_set.filter(Q(title__icontains=x) | Q(category__name__icontains=x))
-    print('after: ',query_set)
+        query_set = query_set.filter(Q(tags__name__icontains=x) | Q(category__name__icontains=x) | Q(
+            title__icontains=x) | Q(uploader__username__icontains=x)).distinct()
 
     return render(request, 'imagehost/index.html', context={'message': message, 'image_list': query_set})
 
