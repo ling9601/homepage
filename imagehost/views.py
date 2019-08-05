@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 from .form import ImageCreateForm
 
@@ -138,6 +139,12 @@ def search(request):
         query_set = query_set.filter(uploader__pk=search_dict['uploader'][0])
         message += 'Uploader: {} ;'.format(
             User.objects.get(pk=search_dict['uploader'][0]).username)
+
+    x=request.GET.get('x')
+    print('before: ',query_set)
+    if x:
+        query_set=query_set.filter(Q(title__icontains=x) | Q(category__name__icontains=x))
+    print('after: ',query_set)
 
     return render(request, 'imagehost/index.html', context={'message': message, 'image_list': query_set})
 

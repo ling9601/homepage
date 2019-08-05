@@ -17,10 +17,10 @@
             <a href="{% url 'imagehost:upload' %}" class="btn btn-dark">Upload picture</a>
         </div>
         <div class="col-6">
-            <form action="{% url 'imagehost:search' %}" method="get" id="searchForm" class="input-group">
+            <form action="{% url 'imagehost:search' %}" method="get" id="searchform" class="input-group">
                 <div class="">
                     <select name="category" id='category' class="selectpicker">
-                        <option value="" selected disabled>Category</option>
+                        <option selected disabled>Category</option>
                         {% get_categories as category_list %}
                         {% for category in category_list %}
                         <option value="{{ category.pk }}">{{ category }} ({{ category.num_images }})</option>
@@ -28,7 +28,7 @@
                         {% endfor %}
                     </select>
                     <select name="tags" class="selectpicker" multiple>
-                        <option value="" selected disabled>Tags</option>
+                        <option selected disabled>Tags</option>
                         {% get_tags as tag_list %}
                         {% for tag in tag_list %}
                         <option value="{{ tag.pk }}">{{ tag }} ({{ tag.num_images}})</option>
@@ -36,7 +36,7 @@
                         {% endfor %}
                     </select>
                     <select name="uploader" class="selectpicker">
-                        <option value="" selected disabled>Uploader</option>
+                        <option selected disabled>Uploader</option>
                         {% get_uploaders as uploader_list %}
                         {% for uploader in uploader_list %}
                         <option value="{{ uploader.pk }}">{{ uploader }} ({{ uploader.num_images}})</option>
@@ -78,6 +78,11 @@
 
 {% block rear %}
 <script src="{% static 'imagehost/js/bootstrap-select.min.js' %}"></script>
+<script>
+    $("#resetAnchor").on("click", function () {
+        $("#searchform select").val('default').selectpicker("refresh");
+    });
+</script>
 {% endblock rear %}
 
 
