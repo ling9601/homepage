@@ -14,6 +14,10 @@ if os.path.isdir('whoosh_index'):
     shutil.rmtree('whoosh_index')
     print("delete dir 'whoosh_index'\n")
 
+if os.path.isdir('media'):
+    shutil.rmtree('media')
+    print("delete dir 'media'\n")
+
 os.system('python manage.py makemigrations')
 
 os.system('python manage.py migrate --run-syncdb')
