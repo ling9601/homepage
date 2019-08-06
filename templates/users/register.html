@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="zh-cn">
 <head>
     <meta charset="utf-8">
@@ -13,31 +14,49 @@
     </style>
 </head>
 <body>
-<div class="flex-center">
-    <div class="container">
-        <div class="flex-center">
-            <div class="unit-1-2 unit-1-on-mobile">
-                <h3>Registration</h3>
-                <form class="form" action="{% url 'users:register' %}" method="post">
-                    {% csrf_token %}
-                    {{ form.non_field_errors }}
-                    {% for field in form %}
-                        {{ field.label_tag }}
-                        {{ field }}
-                        {{ field.errors }}
-                        {% if field.help_text %}
-                            <p class="help text-small text-muted">{{ field.help_text|safe }}</p>
-                        {% endif %}
-                    {% endfor %}
-                    <button type="submit" class="btn btn-primary btn-block">register</button>
-                    <input type="hidden" name="next" value="{{ next }}"/>
-                </form>
-                <div class="flex-center top-gap text-small">
-                    <a href="{% url 'login' %}"> Already registered ? Login</a>
+    <div class="flex-center">
+        <div class="container">
+            <div class="flex-center">
+                <div class="unit-1-2 unit-1-on-mobile">
+                    <h3>Registration</h3>
+                    <form class="form" action="{% url 'users:register' %}" method="post">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        {% for field in form %}
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {{ field.errors }}
+                            {% if field.help_text %}
+                                <p class="help text-small text-muted">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary btn-block">register</button>
+                        <input type="hidden" name="next" value="{{ next }}"/>
+                    </form>
+                    <div class="flex-center top-gap text-small">
+                        <a href="{% url 'login' %}"> Already registered ? Login</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+    <script src="{% static 'users/js/jquery.min.js' %}"></script>
+    <script>
+        $("#id_username").change(function() {
+            var username = $(this).val();
+            $.ajax({
+                url:'{% url 'users:validate_username' %}',
+                data: {
+                    'username' : username
+                },
+                dataType:'json',
+                success: function(data) {
+                    if (data.is_taken) {
+                        alert("A user with this username already exists");
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>

@@ -148,11 +148,12 @@
                         Are you sure you want to delete {{ image }} ?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <form method="POST" action="{% url 'imagehost:delete' image.pk %}">
                             {% csrf_token %}
                             <input class="btn btn-primary" type="submit" value="Confirm">
                         </form>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
                     </div>
                 </div>
             </div>

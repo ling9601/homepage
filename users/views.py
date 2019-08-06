@@ -1,33 +1,51 @@
 from django.shortcuts import render, redirect
-from .forms import RegisterForm
+from .forms import UserRegisterForm
 from django.contrib.auth import authenticate, login
+from django.views.generic import FormView
+from django.urls import reverse
+from django.http import JsonResponse
+
+from .models import User
 
 
 def index(request):
     return render(request, 'users/index.html')
 
 
-def register(request):
-    # While GET , the value of next is passed by url ,like /?next=value
-    # while POST , the value of next is passed by form, like <input type="hidden" name="next" value="{{ next }}"/>
-    redirect_to = request.POST.get('next', request.GET.get('next', ''))
-    if request.method == 'POST':
+class UserRegisterView(FormView):
+    template_name = 'users/register.html'
+    form_class = UserRegisterForm
 
-        form = RegisterForm(request.POST)
+    def form_valid(self, form):
+        form.save()
+        new_user = authenticate(username=form.cleaned_data['username'],
+                                password=form.cleaned_data['password1'])
+        login(self.request, new_user)
+        return super().form_valid(form)
 
-        if form.is_valid():
-            form.save()
+    def get_context_data(self, **kwargs):
+        """
+        Get next url when GET or POST request
+        then send it to template
+        """
+        context = super().get_context_data(**kwargs)
+        next = self.request.GET.get(
+            'next', self.request.POST.get('next', None))
+        context.update({'next': next})
+        return context
 
-            # automatically login after registration
-            new_user = authenticate(username=form.cleaned_data['username'],
-                                    password=form.cleaned_data['password1'])
-            login(request, new_user)
-            if redirect_to:
-                return redirect(redirect_to)
-            else:
-                return redirect('/')
-    else:
+    def get_success_url(self):
+        """ Get next_url and set it as success_url when POST request """
+        next_url = self.request.POST.get('next', None)
+        if next_url:
+            return next_url
+        else:
+            return reverse('home:index')
 
-        form = RegisterForm()
-
-    return render(request, 'users/register.html', context={'form': form, 'next': redirect_to})
+def validate_username(request):
+    """ Check if username for registration already exist """
+    username = request.GET.get('username', None)
+    data = {
+        'is_taken':User.objects.filter(username__iexact=username).exists()
+    }
+    return JsonResponse(data)

@@ -37,7 +37,7 @@
                     <input type="hidden" name="next" value="{{ next }}"/>
                 </form>
                 <div class="flex-left top-gap text-small">
-                    <div class="unit-2-3"><span>Don't have an account？<a href="{% url 'users:register' %}">Register now</a></span></div>
+                    <div class="unit-2-3"><span>Don't have an account？<a href="{% url 'users:register' %}?next={{ next }}">Register now</a></span></div>
                     <div class="unit-1-3 flex-right"><span><a href="reset_password.html">Can't login ？</a></span></div>
                 </div>
             </div>

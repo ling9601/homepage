@@ -62,16 +62,6 @@ class ImageDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         return self.get_object().uploader == self.request.user
 
-    def get(self, request, *args, **kwargs):
-        response = super().get(request, *args, **kwargs)
-        print('get: {}'.format(request.GET))
-        return response
-
-    def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        print('post: {}'.format(request.POST))
-        return response
-
 
 class TagView(ImageListView):
 
