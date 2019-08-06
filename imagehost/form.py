@@ -13,24 +13,30 @@ from .models import Image
 
 # https://stackoverflow.com/questions/48613992/bootstrap-4-file-input-doesnt-show-the-file-name
 
+
 class ImageCreateForm(forms.ModelForm):
 
     class Meta(object):
-        model=Image
-        fields=['title','category','tags','picture']
+        model = Image
+        fields = ['title', 'category', 'tags', 'picture']
 
         widgets = {
             'title': forms.TextInput(
-				attrs={'class': 'form-control'}
-				),
+                attrs={'class': 'form-control'}
+            ),
             'category': forms.Select(
                 attrs={'class': 'form-control'}
-                ),
+            ),
             'tags': forms.SelectMultiple(
-                attrs={'class': 'selectpicker form-control','data-live-search':'true',}
-                ),
+                attrs={'class': 'selectpicker form-control',
+                       'data-live-search': 'true', }
+            ),
             'picture': forms.FileInput(
                 attrs={'class': 'custom-file-label'}
-                ),
-			}
-        
+            ),
+        }
+
+
+class MultipleImageUploadForm(forms.Form):
+    file_field = forms.FileField(
+        widget=forms.ClearableFileInput(attrs={'multiple': True}))

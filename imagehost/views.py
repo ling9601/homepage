@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, HttpResponse
-from django.views.generic import ListView, CreateView, DetailView, DeleteView
+from django.views.generic import ListView, CreateView, DetailView, DeleteView, FormView
 from .models import Image, Tag, Category
 from users.models import User
 from django.urls import reverse_lazy
@@ -8,13 +8,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
-from .form import ImageCreateForm
+from .form import ImageCreateForm, MultipleImageUploadForm
 
 
 class ImageListView(ListView):
     model = Image
     template_name = 'imagehost/index.html'
     context_object_name = 'image_list'
+
+    paginate_by = 12
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -116,70 +118,82 @@ class UploaderView(ImageListView):
         return context
 
 
-def search(request):
+class ImageSearchView(ImageListView):
 
-    search_dict = {}
-    for key, value in request.GET.lists():
-        search_dict[key] = value
-    print(search_dict)
+    def get_queryset(self):
+        query_set = super().get_queryset()
 
-    query_set = Image.objects.all()
-    message = 'Search condition => '
-    if 'category' in search_dict:
-        query_set = query_set.filter(category__pk=search_dict['category'][0])
-        message += 'Category: {} ;'.format(
-            Category.objects.get(pk=search_dict['category'][0]).name)
-    if 'tags' in search_dict:
-        query_set = query_set.filter(tags__in=search_dict['tags']).distinct()
-        message += 'Tags: '
-        message += ','.join(
-            [tag.name for tag in Tag.objects.filter(pk__in=search_dict['tags'])])
-        message += ' ;'
-    if 'uploader' in search_dict:
-        query_set = query_set.filter(uploader__pk=search_dict['uploader'][0])
-        message += 'Uploader: {} ;'.format(
-            User.objects.get(pk=search_dict['uploader'][0]).username)
+        search_dict = {}
+        for key, value in self.request.GET.lists():
+            search_dict[key] = value
 
-    x = request.GET.get('x')
-    message += 'Search term: {}'.format(x)
-    if x:
-        query_set = query_set.filter(Q(tags__name__icontains=x) | Q(category__name__icontains=x) | Q(
-            title__icontains=x) | Q(uploader__username__icontains=x)).distinct()
+        if 'category' in search_dict:
+            query_set = query_set.filter(
+                category__pk=search_dict['category'][0])
+        if 'tags' in search_dict:
+            query_set = query_set.filter(
+                tags__in=search_dict['tags']).distinct()
+        if 'uploader' in search_dict:
+            query_set = query_set.filter(
+                uploader__pk=search_dict['uploader'][0])
 
-    return render(request, 'imagehost/index.html', context={'message': message, 'image_list': query_set})
+        x = self.request.GET.get('x')
+        if x:
+            query_set = query_set.filter(Q(tags__name__icontains=x) | Q(category__name__icontains=x) | Q(
+                title__icontains=x) | Q(uploader__username__icontains=x)).distinct()
+
+        return query_set
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        search_dict = {}
+        for key, value in self.request.GET.lists():
+            search_dict[key] = value
+
+        message = 'Search condition => '
+
+        if 'category' in search_dict:
+            message += 'Category: {} ;'.format(
+                Category.objects.get(pk=search_dict['category'][0]).name)
+        if 'tags' in search_dict:
+            message += 'Tags: '
+            message += ','.join(
+                [tag.name for tag in Tag.objects.filter(pk__in=search_dict['tags'])])
+            message += ' ;'
+        if 'uploader' in search_dict:
+            message += 'Uploader: {} ;'.format(
+                User.objects.get(pk=search_dict['uploader'][0]).username)
+
+        x = self.request.GET.get('x')
+        if x:
+            message += 'Search term: {}'.format(x)
+        context.update({
+            'message': message
+        })
+
+        return context
 
 
-def test(request):
+class UploadFIlesView(FormView):
+    form_class = MultipleImageUploadForm
+    template_name = 'imagehost/multipleupload.html'
+    success_url = reverse_lazy('home:index')
 
-    search_dict = {}
-    for key, value in request.GET.lists():
-        search_dict[key] = value
-    print(search_dict)
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        files = request.FILES.getlist('file_field')
 
-    # query_set=Image.objects.filter(uploader__pk=search_dict['uploader'][0]).filter(category__pk=search_dict['category'][0])
-    # query_set=Image.objects.filter(tags__in=search_dict['tags'])
-    # print('len: {}'.format(len(query_set)))
-
-    query_set = Image.objects.all()
-    message = ''
-    if 'category' in search_dict:
-        query_set = query_set.filter(category__pk=search_dict['category'][0])
-        message += 'Category: {} ;'.format(
-            Category.objects.get(pk=search_dict['category'][0]).name)
-    if 'tags' in search_dict:
-        query_set = query_set.filter(tags__in=search_dict['tags'])
-        message += 'Tags: '
-        message += ','.join(
-            [tag.name for tag in Tag.objects.filter(pk__in=search_dict['tags'])])
-        message += ' ;'
-    if 'uploader' in search_dict:
-        query_set = query_set.filter(uploader__pk=search_dict['uploader'][0])
-        message += 'Uploader: {} ;'.format(
-            User.objects.get(pk=search_dict['uploader'][0]).username)
-
-    print(query_set)
-    print(len(query_set))
-
-    print('message: {}'.format(message))
-
-    return HttpResponse("")
+        if form.is_valid():
+            print('files ', files)
+            for f in files:
+                print("f ", f)
+                image = Image(picture=f, uploader=request.user)
+                if not image.make_thumbnail():
+                    raise Exception(
+                        'Could not create thumbnail - is the file type valid?')
+                image.save()
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)

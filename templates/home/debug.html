@@ -1,0 +1,29 @@
+{% extends 'home/base.html' %}
+
+{% block main %}
+<div class="container">
+    <p>请输入两个数字</p>
+    <form action="/add/" method="get">
+        a: <input type="text" id="a" name="a"> <br>
+        b: <input type="text" id="b" name="b"> <br>
+        <p>result: <span id='result'></span></p>
+        <button type="button" id='sum'>提交</button>
+    </form>
+    <hr class="bg-dark">
+    <a class="btn btn-primary" href="{% url 'imagehost:multipleupload' %}">multipleupload</a>
+</div>
+{% endblock main %}
+
+{% block rear %}
+<script>
+    $(document).ready(function () {
+        $("#sum").click(function () {
+            var a = $("#a").val();
+            var b = $("#b").val();
+            $.get("{% url 'home:add' %}", { 'a': a, 'b': b }, function (ret) {
+                $('#result').html(ret['result'])
+            })
+        });
+    });
+</script>
+{% endblock %}

@@ -8,7 +8,6 @@ urlpatterns = [
     path('upload/', views.ImageCreateView.as_view(), name='upload'),
     path('image/<int:pk>', views.ImageDetailView.as_view(), name='detail'),
     path('delete/<int:pk>', views.ImageDeleteView.as_view(), name='delete'),
-    path('test/', views.test, name='test'),
 
     # simple search
     path('tag/<int:pk>', views.TagView.as_view(), name='tag'),
@@ -16,5 +15,8 @@ urlpatterns = [
     path('uploader/<int:pk>', views.UploaderView.as_view(), name='uploader'),
 
     # search
-    path('search/', views.search, name='search'),
+    path('search/', views.ImageSearchView.as_view(), name='search'),
+
+    # debug
+    path('multipleupload/', views.UploadFIlesView.as_view(), name='multipleupload')
 ]
