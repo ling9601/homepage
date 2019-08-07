@@ -10,6 +10,7 @@ from django.core.files.base import ContentFile
 
 
 class Tag(models.Model):
+
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
@@ -24,6 +25,10 @@ class Category(models.Model):
 
 
 class Image(models.Model):
+
+    class Meta:
+        ordering = ['-uploaded_time']
+
     # 根据settings中的MEDIA_ROOT来存放
     picture = models.ImageField(upload_to='pictures')
 
