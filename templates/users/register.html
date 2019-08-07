@@ -48,7 +48,7 @@
         $("#id_username").change(function () {
             var username = $(this).val();
             $.ajax({
-                url: "{% url 'users: validate_username' %}",
+                url: "{% url 'users:validate_username' %}",
                 data: {
                     'username': username
                 },
