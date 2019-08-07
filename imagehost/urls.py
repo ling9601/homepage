@@ -18,5 +18,8 @@ urlpatterns = [
     path('search/', views.ImageSearchView.as_view(), name='search'),
 
     # debug
-    path('multipleupload/', views.UploadFIlesView.as_view(), name='multipleupload')
+    path('multipleupload/', views.UploadFIlesView.as_view(), name='multipleupload'),
+
+    # ajax
+    path('ajax/get_thumbnail', views.get_thumbnail, name="get_thumbnail"),
 ]

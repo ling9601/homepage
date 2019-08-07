@@ -27,7 +27,7 @@
         background-color: rgb(29, 28, 28);
         min-width: 15rem;
         width: 15rem;
-        margin-right: 0;
+        margin-right: -15rem;
         -webkit-transition: margin .25s ease-out;
         -moz-transition: margin .25s ease-out;
         -o-transition: margin .25s ease-out;
@@ -41,7 +41,7 @@
     }
 
     #img-detail-wrapper.toggled #img-sidebar-wrapper {
-        margin-right: -15rem;
+        margin-right: 0rem;
     }
 
     /* img-sidebar-wrapper */
@@ -56,6 +56,16 @@
 
     #img-detail-wrapper {
         height: 100vh;
+    }
+
+    @media (min-width: 768px) {
+        #img-sidebar-wrapper {
+            margin-right: 0;
+        }
+
+        #img-detail-wrapper.toggled #img-sidebar-wrapper {
+            margin-right: -15rem;
+        }
     }
 </style>
 

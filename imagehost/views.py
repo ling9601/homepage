@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, HttpResponse
+from django.shortcuts import render, get_object_or_404, HttpResponse, HttpResponseRedirect
 from django.views.generic import ListView, CreateView, DetailView, DeleteView, FormView
 from .models import Image, Tag, Category
 from users.models import User
@@ -6,7 +6,14 @@ from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+from django.http import JsonResponse
+
+import PIL.Image
+import PIL.ImageOps
+from io import BytesIO
+import base64
 
 from .form import ImageCreateForm, MultipleImageUploadForm
 
@@ -33,14 +40,21 @@ class ImageCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('imagehost:upload')
 
     def form_valid(self, form):
-
         form.instance.uploader = self.request.user
-
         if not form.instance.make_thumbnail():
             raise Exception(
                 'Could not create thumbnail - is the file type valid?')
+        self.object = form.save()
 
-        return super(ImageCreateView, self).form_valid(form)
+        for key, value in self.request.POST.lists():
+            if key == 'autotags':
+                tags = []
+                for tag_name in value:
+                    tag, _ = Tag.objects.get_or_create(name=tag_name)
+                    tags.append(tag)
+                self.object.tags.add(*tags)
+
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class ImageDetailView(DetailView):
@@ -187,3 +201,22 @@ class UploadFIlesView(FormView):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
+
+# 必须要用post request才能接受文件, ajax中的 contenttype datatype
+@csrf_exempt
+def get_thumbnail(request):
+
+    file_obj = request.FILES.get('file')
+
+    image_data = BytesIO(file_obj.read())
+    img = PIL.Image.open(image_data)
+
+    # # get thumbnail
+    img = PIL.ImageOps.fit(img, (600, 400), PIL.Image.ANTIALIAS)
+
+    buffer = BytesIO()
+    img.save(buffer, format='JPEG')
+    byte_data = buffer.getvalue()
+    base64_str = base64.b64encode(byte_data).decode()
+
+    return JsonResponse({'thumbnail': base64_str})
