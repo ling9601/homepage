@@ -79,8 +79,10 @@ WSGI_APPLICATION = 'homepage.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'read_default_file': os.path.join(BASE_DIR, 'my.cnf')
+        }
     }
 }
 
@@ -148,7 +150,7 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 DOMAIN_NAME = 'www.lingxt.online'
-THUMB_SIZE = (600,400)
+THUMB_SIZE = (600, 400)
 
 # using customize user model
 AUTH_USER_MODEL = 'users.User'
@@ -157,7 +159,7 @@ AUTH_USER_MODEL = 'users.User'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 
-LOGIN_URL='/users/login'
+LOGIN_URL = '/users/login'
 
 # fix nginx 403 problem when serving media file over 2.5m
-FILE_UPLOAD_PERMISSIONS=0o640
+FILE_UPLOAD_PERMISSIONS = 0o640
