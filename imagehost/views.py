@@ -14,6 +14,7 @@ import PIL.Image
 import PIL.ImageOps
 from io import BytesIO
 import base64
+import os
 
 from .form import ImageCreateForm, MultipleImageUploadForm
 
@@ -207,6 +208,16 @@ class UploadFIlesView(FormView):
 def get_thumbnail(request):
 
     file_obj = request.FILES.get('file')
+    _,file_extension=os.path.splitext(file_obj.name)
+
+    if file_extension in ['.jpg', '.jpeg']:
+        FTYPE = 'JPEG'
+    elif file_extension == '.gif':
+        FTYPE = 'GIF'
+    elif file_extension == '.png':
+        FTYPE = 'PNG'
+    else:
+        return False    # Unrecognized file type
 
     image_data = BytesIO(file_obj.read())
     img = PIL.Image.open(image_data)
@@ -214,8 +225,9 @@ def get_thumbnail(request):
     # # get thumbnail
     img = PIL.ImageOps.fit(img, (600, 400), PIL.Image.ANTIALIAS)
 
+
     buffer = BytesIO()
-    img.save(buffer, format='JPEG')
+    img.save(buffer, FTYPE)
     byte_data = buffer.getvalue()
     base64_str = base64.b64encode(byte_data).decode()
 
