@@ -36,7 +36,7 @@
         <a href="#" class="list-group-item list-group-item-action bg-light">Events</a>
         <a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>
         <a href="#" class="list-group-item list-group-item-action bg-light">Status</a>
-        {% if request.user.is_superuser %}
+        {% if user.is_superuser %}
         <a href="{%url 'home:debug' %}" class="list-group-item list-group-item-action bg-danger">DEBUG</a>
         {% endif %}
       </div>

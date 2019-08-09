@@ -34,7 +34,7 @@ class Image(models.Model):
 
     title = models.CharField(max_length=100, blank=True)
 
-    uploaded_time = models.DateField(auto_now_add=True)
+    uploaded_time = models.DateTimeField(auto_now_add=True)
 
     tags = models.ManyToManyField(Tag, blank=True)
 

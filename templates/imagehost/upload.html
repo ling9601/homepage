@@ -13,9 +13,32 @@
 <div class='container page-top'>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
+
     {% for field in form %}
 
-    {% if field.name != "picture" %}
+    {% if field.name == "picture" %}
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="id_autotags">AutoTags:</label>
+      <div class="col-sm-10">
+        <div class="input-group">
+          <select name="autotags" class="form-control" id="id_autotags" multiple>
+            <option value="default" selected disabled>Auto tagging</option>
+          </select>
+          <div class="input-group-append">
+            <button class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#AddTagModal">Add
+              Tag</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="custom-file">
+      {{ field }}
+      {{ field|label_with_classes:'custom-file-label'}}
+    </div>
+    <img id='img-upload' />
+
+    {% else %}
 
     <div class="form-group row">
       {{ field|label_with_classes:'col-sm-2 col-form-label' }}
@@ -27,21 +50,6 @@
       {% endif %}
     </div>
 
-    {% else %}
-    <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="id_autotags">AutoTags:</label>
-      <div class="col-sm-10">
-        <select name="autotags" class="form-control" id="id_autotags" multiple>
-          <option value="default" selected disabled>Auto tagging</option>
-        </select>
-      </div>
-    </div>
-    <div class="custom-file">
-      {{ field }}
-      {{ field|label_with_classes:'custom-file-label'}}
-    </div>
-
-    <img id='img-upload' />
     {% endif %}
 
     {% endfor %}
@@ -56,18 +64,55 @@
   <hr class="bg-secondary">
   <a href="{% url 'imagehost:index' %}" class="btn btn-light">Return to ImageHost</a>
 </div>
-{% endblock %}
+
+<!-- AddTagModal -->
+<div class="modal fade" id="AddTagModal" aria-labelledby="AddTagModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="AddTagModalLabel">Add Tag</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="TagName" class="col-form-label">Tag:</label>
+            <input type="text" class="form-control" id="TagName">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="AddTagConfirm" data-dismiss="modal">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock main%}
 
 {% block rear %}
 <script src="{% static 'imagehost/js/bootstrap-select.min.js' %}"></script>
 <script src="{% static 'imagehost/js/custom.js' %}"></script>
 <script>
   $(document).ready(function () {
+
+    $('#AddTagModal #AddTagConfirm').click(function () {
+      var tag_name = $('#AddTagModal #TagName').val();
+      if (tag_name) {
+        console.log("true");
+        $('#id_autotags').prepend(new Option("(new) " + tag_name, tag_name, true, true));
+      }
+    })
+
     $('#id_picture').change(function () {
 
-      // Remove old tags
+      // Remove old autotags
       $("#id_autotags option").each(function () {
-        if ($(this).val() != "default") {
+        var tag_value = $(this).val();
+        if ((tag_value != "default") && (~tag_value.indexOf("(new)"))) {
           $(this).remove();
         }
       })

@@ -137,7 +137,7 @@
             </div>
             <input type="text" class="form-control bg-dark text-light " value="{{ image.picture.url }}">
         </div>
-        {% if user.pk == image.uploader.pk %}
+        {% if user == image.uploader %}
         <div class="text-center mt-4">
             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#DeleteModal">
                 Delete
