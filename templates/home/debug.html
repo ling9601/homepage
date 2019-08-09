@@ -12,6 +12,15 @@
     <hr class="bg-dark">
     <a class="btn btn-primary" href="{% url 'imagehost:multipleupload' %}">multipleupload</a>
 </div>
+<div class="container">
+    <h5>mutipleupload</h5>
+    <form method="post" enctype="multipart/form-data" action="{% url 'imagehost:multipleupload' %}">
+        {% csrf_token %}
+        <label for="id_file_field">File field</label>
+        <input type="file" name="file_field" multiple required id="id_file_field">
+        <input type="submit" value="submit" />
+    </form>
+</div>
 {% endblock main %}
 
 {% block rear %}
