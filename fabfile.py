@@ -1,6 +1,6 @@
 from fabric import task
 from invoke import Responder
-from ._credentials import github_username, github_password
+from _credentials import github_username, github_password
 
 
 def _get_github_auth_responders():
@@ -21,9 +21,6 @@ def _get_github_auth_responders():
 
 @task()
 def deploy(c):
-    supervisor_conf_path = '~/etc/'
-    supervisor_program_name = 'hellodjango-blog-tutorial'
-
     project_root_path = '~/sites/www.lingxt.online/homepage/'
 
     # 切换的相应用户
