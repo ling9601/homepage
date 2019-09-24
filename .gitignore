@@ -112,3 +112,6 @@ media/
 
 # VSCode
 .vscode/
+
+# github account info
+_credentials.py
