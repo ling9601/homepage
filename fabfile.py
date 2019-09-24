@@ -21,28 +21,24 @@ def _get_github_auth_responders():
 
 @task()
 def deploy(c):
-    project_root_path = '~/sites/www.lingxt.online/homepage/'
-
-    # 切换的相应用户
-    cmd = 'echo "password\n" | su - lingxt'
-    c.run(cmd)
+    project_root_path = '/home/lingxt/sites/www.lingxt.online/homepage/'
 
     # 停止应用
-    cmd = 'echo "password\n" | sudo systemctl stop gunicorn-www.lingxt.online'
+    cmd = 'sudo systemctl stop gunicorn-www.lingxt.online'
     c.run(cmd)
 
     # 进入项目根目录，从 Git 拉取最新代码
     with c.cd(project_root_path):
-        cmd = 'git pull'
+        cmd = 'sudo git pull'
         responders = _get_github_auth_responders()
         c.run(cmd, watchers=responders)
 
     # 安装依赖，迁移数据库，收集静态文件
     with c.cd(project_root_path):
-        workon = 'workon homepage &&'
-        c.run(workon + 'pip install -r requirements.txt')
-        c.run(workon + 'python manage.py migrate')
-        c.run(workon + 'python manage.py collectstatic --noinput')
+        with c.prefix(". /home/ubuntu/.local/bin/virtualenvwrapper.sh; workon homepage"):
+            c.run('pip install -r requirements.txt')
+            c.run('python manage.py migrate')
+            c.run("python manage.py collectstatic --noinput")
 
     # 重新启动应用
     c.run('sudo systemctl start gunicorn-www.lingxt.online')
