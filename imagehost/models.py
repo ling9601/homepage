@@ -1,5 +1,5 @@
 from django.db import models
-from homepage.settings import THUMB_SIZE
+from homepage.settings.common import THUMB_SIZE
 from users.models import User
 
 import PIL.Image
