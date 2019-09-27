@@ -36,9 +36,9 @@ def deploy(c):
     # 安装依赖，迁移数据库，收集静态文件
     with c.cd(project_root_path):
         # 指定虚拟环境
-        with c.prefix(". /home/ubuntu/.local/bin/virtualenvwrapper.sh; workon homepage"):
+        with c.prefix(". /home/lingxt/.local/bin/virtualenvwrapper.sh; workon homepage"):
             c.run('pip install -r requirements.txt')
-            c.run('python manage.py migrate -auth')
+            c.run('python manage.py migrate auth')
             c.run('python manage.py migrate --run-syncdb')
             c.run("python manage.py collectstatic --noinput")
 
