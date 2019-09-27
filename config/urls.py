@@ -29,6 +29,8 @@ urlpatterns = [
     path('users/',include('users.urls')),
     # build in urls for registration
     path('users/',include('django.contrib.auth.urls')),
+
+    path('accounts/',include('allauth.urls')),
 ]
 
 # open access to media file,only under DEBUG mode

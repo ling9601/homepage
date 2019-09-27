@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load account socialaccount %}
 <html lang="en">
 
 <head>
@@ -12,8 +13,12 @@
   <!-- Bootstrap core CSS -->
   <link href="{% static 'home/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
+  <link href="{% static 'home/css/bootstrap-social.css' %}" rel="stylesheet">
+
   <!-- Custom styles for this template -->
   <link href="{% static 'home/css/simple-sidebar.css' %}" rel="stylesheet">
+
+  <script src="https://kit.fontawesome.com/d456065785.js" crossorigin="anonymous"></script>
 
   {% block base_head %}
   {% endblock base_head %}
@@ -65,12 +70,23 @@
                 {{ user.username }}
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                <img class="dropdown-item" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" />
                 <a class="dropdown-item" href="{% url 'logout' %}?next={{ request.path }}">Logout</a>
+              </div>
             </li>
             {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}?next={{ request.path }}">Login</a>
-            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="loginDropdown" role="button" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+                  Login
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="loginDropdown">
+                  <img class="dropdown-item" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" />
+                  <a class="dropdown-item" href="{% url 'login' %}?next={{ request.path }}">Login</a>
+                  <a class="dropdown-item" href='{% provider_login_url "github" %}'>Login by a Github account</a>
+                </div>
+              </li>
+            
             {% endif %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
@@ -99,6 +115,7 @@
   <!-- Bootstrap core JavaScript -->
   <script src="{% static 'home/vendor/jquery/jquery.min.js' %}"></script>
   <script src="{% static 'home/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
 
   {% block rear %}
   {% endblock rear %}

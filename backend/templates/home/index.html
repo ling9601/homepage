@@ -4,5 +4,10 @@
 {% endblock head %}
 
 {% block main %}
+{% if user.is_authenticated %}
+<h1>Welcome - {{ user.username}}</h1>
+<img src="{{ user.socialaccount_set.all.0.get_avatar_url }}" />
+{% else %}
 <h1>{{ welcome }}</h1>
+{% endif %}
 {% endblock main %}

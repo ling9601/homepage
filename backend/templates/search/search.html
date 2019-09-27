@@ -1,7 +1,7 @@
 {% extends 'blog/base.html' %}
 {% load highlight %}
 
-{% block main %}
+{% block content %}
     {% if query %}
         {% for result in page.object_list %}
             <article class="post post-{{ result.object.pk }}">
@@ -47,4 +47,4 @@
     {% else %}
         Please enter a search keyword, such as django
     {% endif %}
-{% endblock main %}
+{% endblock content %}

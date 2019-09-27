@@ -18,6 +18,8 @@ def post_comment(request,post_pk):
 
             comment.post=post
 
+            comment.author = request.user
+
             comment.save()
 
             # get_absolute_url need to be implement

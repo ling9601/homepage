@@ -32,21 +32,40 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.lingxt.online']
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # needed for allauth
+    'django.contrib.sites',
+]
+
+THIRD_PARTY_APPS = [
+    'crispy_forms',
+    'haystack',
+    # needed for allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
+]
+
+LOCAL_APPS = [
     'blog',
     'comments',
-    'haystack',
     'imagehost',
-    'crispy_forms',
     'users',
     'home',
 ]
+
+# needed for allauth
+SITE_ID = 1
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -124,6 +143,8 @@ USE_TZ = True
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'users.backends.EmailBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 # Static files (CSS, JavaScript, Images)
