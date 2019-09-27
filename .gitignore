@@ -109,10 +109,12 @@ venv.bak/
 # django
 whoosh_index/
 media/
-static/
 
 # VSCode
 .vscode/
 
 # github account info
 _credentials.py
+
+# mysql info
+my.cnf
