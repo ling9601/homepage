@@ -1,0 +1,47 @@
+{% extends 'imagehost/base.html' %}
+{% block content %}
+
+    <h2>Pictures</h2>
+    <table class="table">
+        <thread>
+            <tr>
+                <th>Title</th>
+                <th>Uploaded_Time</th>
+                <th>Pciture</th>
+                <th>Delete</th>
+                <th>Copy</th>
+            </tr>
+        </thread>
+        <tbody>
+            {% for image in ImageList %}
+                <script type="text/javascript">
+                    function copy() {
+                        var e = document.getElementById("copy-{{image.id}}");
+                        e.select(); // 选择对象
+                        document.execCommand("Copy"); // 执行浏览器复制命令
+                        alert("复制成功！");
+                    }
+                </script>
+                <tr>
+                    <td>{{ image.title }}</td>
+                    <td>{{ image.uploaded_time }}</td>
+                    <td>
+                        <a href="{{ image.picture.url }}">
+                            <img src="{{ image.picture.url }}" style="width:100px;" />
+                        </a>
+                    <td>
+                    <td>
+                        <form method="POST" action="{% url 'imagehost:delete' image.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                    <td>
+                        <textarea id="copy-{{image.id}}">{{image.get_picture_absolute_url}}</textarea>
+                        <input type="button" onclick="copy();" value="点击复制"></input>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
