@@ -39,7 +39,7 @@
         <a href="{% url 'home:index' %}" class="list-group-item list-group-item-action bg-light">Home</a>
         <a href="{% url 'imagehost:index' %}" class="list-group-item list-group-item-action bg-light">ImageHost</a>
         <a href="{% url 'blog:index' %}" class="list-group-item list-group-item-action bg-light">Blog</a>
-        <a id = 'jupyter-notebook' href="http://13.59.98.103:5000/" class="list-group-item list-group-item-action bg-light">Jupyter notebook</a>
+        <a href="http://13.59.98.103:5000/" class="list-group-item list-group-item-action bg-light">Jupyter notebook</a>
         {% if user.is_superuser %}
         <a href="{%url 'home:debug' %}" class="list-group-item list-group-item-action bg-danger">DEBUG</a>
         {% endif %}
@@ -126,43 +126,6 @@
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
     });
-  </script>
-  <!-- Check url availability -->
-  <script>
-    function checkStatus(url) {
-      var theLink = $('#jupyter-notebook')
-      var text = theLink[0].innerHTML
-      theLink.removeAttr('href')
-      theLink.text("Checking Jupyter-Notebook for availability")
-      var request = new XMLHttpRequest()
-      request.onreadystatechange = function() {
-        if (request.readyState === 4) {
-          // if is not available
-          request.onerror = function(e) {
-            theLink[0].innerHTML = "Click to restore Jupyter-Notebook server"
-            theLink.on('click',function(e) {
-              // disable the link
-              e.preventDefault();
-              $.ajax({
-                url : 'run-sh/',
-                headers: {'X-CSRFToken': '{{ csrf_token }}'},
-                method: 'GET',
-                data: {'FileName':'start_jupyter_notebook.sh'},
-                dataType:'json',
-              })
-            })
-          }
-          theLink.attr('href',url)
-          theLink[0].innerHTML = "Jupyter Notebook"
-        }
-      }
-      request.open("GET",url,true);
-      request.send()
-    }
-    window.onload = function() {
-      var url = 'http://13.59.98.103:5000/'
-      checkStatus(url)
-    }
   </script>
 
 </body>
