@@ -1,7 +1,10 @@
 from ..models import Post, Category, Tag
 
 from django import template
+from django.template.defaultfilters import stringfilter
 from django.db.models.aggregates import Count
+
+import markdown
 
 register = template.Library()
 
@@ -26,3 +29,13 @@ def get_categories():
 def get_tags():
     """ get tags with num_posts attach to it """
     return Tag.objects.annotate(num_posts=Count('post')).filter(num_posts__gt=0)
+
+@register.filter
+@stringfilter
+def to_markdown(value):
+    md_text = markdown.markdown(value,
+                                    extensions=[
+                                        'markdown.extensions.extra',
+                                        'markdown.extensions.codehilite',
+                                        'markdown.extensions.toc',])
+    return md_text

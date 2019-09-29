@@ -1,5 +1,6 @@
 {% extends 'blog/base.html' %}
 {% load socialaccount %}
+{% load blog_extras %}
 
 {% block content %}
 
@@ -62,7 +63,7 @@
                 <span class="nickname">{{ comment.author.username }}</span>
                 <time class="submit-date">{{ comment.created_time }}</time>
                 <div class="text">
-                    {{ comment.body }}
+                    {{ comment.body | to_markdown | safe}}
                 </div>
             </li>
             {% empty %}

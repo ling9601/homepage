@@ -9,6 +9,13 @@
     integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
 
 <style>
+
+    .avatar {
+        max-height: 2rem;
+        max-width: 2rem;
+        margin-right: 0.2rem;
+    }
+
     /* make sidebar closed as default */
     #sidebar-wrapper {
         margin-left: -15rem;
@@ -32,6 +39,7 @@
         -moz-transition: margin .25s ease-out;
         -o-transition: margin .25s ease-out;
         transition: margin .25s ease-out;
+        color: white;
     }
 
     #img-sidebar-wrapper #sidebar-toggle-button {
@@ -105,8 +113,7 @@
                 <tbody>
                     <tr>
                         <th>Uploader</th>
-                        <th><a href="{% url 'imagehost:uploader' image.uploader.pk %}">{{ image.uploader.username }}</a>
-                        </th>
+                        <th><img class="avatar" src='{{image.uploader.socialaccount_set.all.0.get_avatar_url}}'></img><span>{{image.uploader.username}}</span></th>
                     </tr>
                     <tr>
                         <th>Category</th>
