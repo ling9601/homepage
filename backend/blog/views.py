@@ -225,7 +225,7 @@ class PostDetailView(DetailView):
 
         context.update({
             'form': CommentForm,
-            'comment_list': self.object.comment_set.all()
+            'comments': self.object.comment_set.all()
         })
 
         return context

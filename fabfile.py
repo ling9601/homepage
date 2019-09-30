@@ -41,6 +41,7 @@ def deploy(c):
             c.run('python manage.py migrate auth')
             c.run('python manage.py migrate --run-syncdb')
             c.run("python manage.py collectstatic --noinput")
+            c.run('python manage.py rebuild_index --noinput')
 
     # 重新启动应用
     c.run('sudo systemctl start gunicorn-www.lingxt.online')
