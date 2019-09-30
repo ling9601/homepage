@@ -6,10 +6,15 @@
 <!-- 多重继承时会覆盖之前的 -->
 {% block head %}
 <link rel="stylesheet" href="{% static 'imagehost/css/bootstrap-select.min.css' %}">
+<style>
+  #upload-wrapper {
+    color: white;
+  }
+</style>
 {% endblock head %}
 
 {% block main %}
-<div class='container page-top'>
+<div class='container page-top' id = 'upload-wrapper'>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
 

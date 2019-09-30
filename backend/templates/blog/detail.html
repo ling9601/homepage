@@ -2,6 +2,18 @@
 {% load socialaccount %}
 {% load blog_extras %}
 
+{% block head %}
+
+<style>
+    .avatar {
+        max-height: 2rem;
+        max-width: 2rem;
+        margin-right: 0.2rem;
+    }
+</style>
+
+{% endblock head %}
+
 {% block content %}
 
 <article class="post post-1">
@@ -71,6 +83,7 @@
                 >
                     <hr>
                     <p>
+                        <img class="avatar" src="{{ comment.author.socialaccount_set.all.0.get_avatar_url }}"></img>
                         <strong style="color: pink">
                             {{ comment.author }}
                         </strong> 
@@ -79,6 +92,7 @@
                             <i class="far fa-arrow-alt-circle-right" 
                                 style="color: cornflowerblue;"
                             ></i>
+                            <img class="avatar" src="{{ comment.reply_to.socialaccount_set.all.0.get_avatar_url }}"></img>
                             <strong style="color: pink">
                                 {{ comment.reply_to }}
                             </strong> 
@@ -98,11 +112,11 @@
                                 class="btn btn-light btn-sm text-muted" 
                                 onclick="load_modal({{ post.id }}, {{ comment.id }})"
                                 >
-                            回复
+                            Reply
                         </button>
                         {% else %}
                         <a class="btn btn-light btn-sm text-muted" href="{% url 'login' %}">
-                            回复
+                            Reply
                         </a>
                         {% endif %}
                     </div>

@@ -6,6 +6,12 @@
 
 <link rel="stylesheet" href="{% static 'imagehost/css/bootstrap-select.min.css' %}">
 
+<style>
+    #image-list-wrapper {
+        color: white;
+    }
+</style>
+
 {% endblock head %}
 
 {% block main %}
@@ -53,7 +59,7 @@
     </div>
 </div>
 
-<div class="container-fluid page-top">
+<div class="container-fluid page-top" id = 'image-list-wrapper'>
     <h2 class="text-center page-header">{{ message }}</h2>
     <!-- 分割线 -->
     <hr class="bg-secondary">
