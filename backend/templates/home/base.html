@@ -39,7 +39,7 @@
         <a href="{% url 'home:index' %}" class="list-group-item list-group-item-action bg-light">Home</a>
         <a href="{% url 'imagehost:index' %}" class="list-group-item list-group-item-action bg-light">ImageHost</a>
         <a href="{% url 'blog:index' %}" class="list-group-item list-group-item-action bg-light">Blog</a>
-        <a href="http://13.59.98.103:5000/" class="list-group-item list-group-item-action bg-light">Jupyter notebook</a>
+        <a href="http://18.219.156.84:5000/" class="list-group-item list-group-item-action bg-light">Jupyter notebook</a>
         {% if user.is_superuser %}
         <a href="{%url 'home:debug' %}" class="list-group-item list-group-item-action bg-danger">DEBUG</a>
         {% endif %}
