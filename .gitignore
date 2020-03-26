@@ -119,3 +119,7 @@ _credentials.py
 
 # mysql info
 my.cnf
+
+
+# ordinro_scrapy
+cookies.json

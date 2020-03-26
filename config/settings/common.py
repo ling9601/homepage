@@ -62,6 +62,7 @@ LOCAL_APPS = [
     'imagehost',
     'users',
     'home',
+    'crawler',
 ]
 
 # needed for allauth
