@@ -15,3 +15,24 @@ class StoreItem_dj(models.Model):
     price = models.IntegerField()
     num = models.IntegerField()
     time = models.DateTimeField()
+
+class BaseItem_dj(models.Model):
+    item_id = models.IntegerField(primary_key=True)
+    image_link = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    genre = models.CharField(max_length=30)
+    equipment_location = models.CharField(max_length=30)
+    buy_price = models.IntegerField(null=True)
+    sell_price = models.IntegerField(null=True)
+    weight = models.FloatField(null=True)
+    atk = models.IntegerField(null=True)
+    matk = models.IntegerField(null=True)
+    defense = models.IntegerField(null=True)
+    attack_distance = models.IntegerField(null=True)
+    hole_num = models.IntegerField()
+    refinable = models.BooleanField(null=True)
+
+class ScrapyItem(models.Model):
+    start_time = models.DateTimeField(primary_key=True)
+    end_time = models.DateTimeField()
+    item_num = models.IntegerField()

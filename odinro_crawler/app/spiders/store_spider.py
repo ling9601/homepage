@@ -1,9 +1,13 @@
 import scrapy
+from scrapy import signals
 
 from app.items import StoreItem, StoreItemLoader
 from app.utils.cookies import get_cookies
 import datetime
 import re
+import pytz
+
+from crawler.models import ScrapyItem
 
 class StoreSpider(scrapy.Spider):
     name = 'store'
@@ -15,7 +19,8 @@ class StoreSpider(scrapy.Spider):
         self.base_url = 'https://odinro.online/vending/?s=/vending/&p={}'
         self.vender_url = 'https://odinro.online/vending/viewshop/?id={}'
 
-        self.start_time = datetime.datetime.now()
+        self.start_time = datetime.datetime.now(tz=pytz.timezone('Asia/Tokyo'))
+        self.scrapy_item = ScrapyItem(start_time=self.start_time)
         
         yield scrapy.Request(url=self.base_url.format(1), callback=self.parse_page_num, cookies=self.cookies)
         # yield scrapy.Request(url='https://odinro.online/vending/viewshop/?id=134', callback=self.parse, cookies=self.cookies, meta={'store_id':134})
@@ -24,7 +29,7 @@ class StoreSpider(scrapy.Spider):
         page_num_string = response.css('#ranking-page p::text') .get()
         num = int(re.findall(r'\d+', page_num_string)[1])
 
-        for i in range(num):
+        for i in range(2):
             yield scrapy.Request(url=self.base_url.format(i+1), callback=self.parse_store_id, cookies=self.cookies, dont_filter=True)
 
     def parse_store_id(self, response):
@@ -68,6 +73,17 @@ class StoreSpider(scrapy.Spider):
 
             item = l.load_item()
             yield item
+
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = super(StoreSpider, cls).from_crawler(crawler, *args, **kwargs)
+        crawler.signals.connect(spider.spider_closed, signal=signals.spider_closed)
+        return spider
+    def spider_closed(self, spider):
+        self.scrapy_item.end_time = datetime.datetime.now(tz=pytz.timezone('Asia/Tokyo'))
+        self.scrapy_item.item_num = spider.crawler.stats.get_stats()['item_scraped_count']
+        self.scrapy_item.save(force_insert=True)
+        spider.logger.info('Spider closed: %s', spider.name)
 
 
     # def parse(self, response):

@@ -5,11 +5,15 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 # from pymongo import MongoClient
-from crawler.models import StoreItem_dj
+from crawler.models import StoreItem_dj, BaseItem_dj
+from app.items import StoreItem, BaseItem
 
 class DjangoPipeLine(object):
     def process_item(self, item, spider):
-        StoreItem_dj(**item).save()
+        if isinstance(item, StoreItem):
+            StoreItem_dj(**item).save(force_insert=True)
+        elif isinstance(item, BaseItem):
+            BaseItem_dj(**item).save(force_insert=True)
         return item
 
 ## use for StoreItem

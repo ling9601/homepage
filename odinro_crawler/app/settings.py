@@ -105,4 +105,4 @@ MONGO_URI = 'mongodb://localhost:27017/'
 MONGO_DATABASE = 'Odinro'
 
 # LOG
-# LOG_FILE = 'log.txt'
+LOG_FILE = 'log.txt'

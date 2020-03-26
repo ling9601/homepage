@@ -14,14 +14,29 @@ import re
 def filter_non_digit(string):
     return re.sub("[^0-9]", "", string)
 
+def string2boolean(string):
+    if string.upper() == 'YES':
+        return True
+    else:
+        return False
+
 class BaseItemLoader(ItemLoader):
     default_input_processor = MapCompose(str.strip)
     default_output_processor = TakeFirst()
-    id_out = Compose(TakeFirst(),int)
+    item_id_out = Compose(TakeFirst(),int)
+    hole_num_out = Compose(TakeFirst(), int)
+    buy_price_out = Compose(TakeFirst(), filter_non_digit, int)
+    sell_price_out = Compose(TakeFirst(), filter_non_digit, int)
+    weight_out = Compose(TakeFirst(), float)
+    atk_out = Compose(TakeFirst(), int)
+    matk_out = Compose(TakeFirst(), int)
+    defense_out = Compose(TakeFirst(), int)
+    attack_distance_out = Compose(TakeFirst(), int)
+    refinable_out = Compose(TakeFirst(), string2boolean)
 
 class BaseItem(scrapy.Item):
 
-    id = Field()
+    item_id = Field()
     image_link = Field()
     name = Field()
     genre = Field()
@@ -37,7 +52,7 @@ class BaseItem(scrapy.Item):
     refinable = Field()
 
     def __repr__(self):
-        return repr({'id': self['id'],"name": self['name']})
+        return repr({'item_id': self['item_id'],"name": self['name']})
 
 class StoreItemLoader(ItemLoader):
     default_input_processor = MapCompose(str.strip)
@@ -70,5 +85,5 @@ class StoreItem(scrapy.Item):
     time = Field()
 
     def __repr__(self):
-        return repr({'id':self['item_id'], 'name':self['name']})
+        return repr({'item_id':self['item_id'], 'name':self['name']})
 

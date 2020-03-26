@@ -2,15 +2,21 @@ import scrapy
 from app.utils.cookies import get_cookies
 from app.items import BaseItem,BaseItemLoader
 
+from crawler.models import BaseItem_dj
+
 class DatabaseSpider(scrapy.Spider):
-    name = "database"
+    name = "base"
 
     def start_requests(self):
+        
+        # clean BaseItem_dj
+        BaseItem_dj.objects.all().delete()
+
         username = '2064162186'
         password = 'king88628'
         cookies = get_cookies(username, password)
         base_url = 'https://odinro.online/item/?&equip_loc=-1/&p={}'
-        for page in range(1,11):
+        for page in range(1,205):
             yield scrapy.Request(url=base_url.format(page), callback=self.parse, cookies=cookies)
 
     def parse(self, response):
@@ -20,7 +26,7 @@ class DatabaseSpider(scrapy.Spider):
             l = BaseItemLoader(item=BaseItem(), selector=raw_item)
             if raw_item.css('td:nth-child(2) img::attr(src)').get():
                 # item with image_link
-                l.add_css('id', 'td:nth-child(1) a::text')
+                l.add_css('item_id', 'td:nth-child(1) a::text')
                 l.add_css('image_link', 'td:nth-child(2) img::attr(src)')
                 l.add_css('name', 'td:nth_child(3)::text')
                 l.add_css('genre', 'td:nth_child(4)::text')
@@ -37,7 +43,7 @@ class DatabaseSpider(scrapy.Spider):
 
             else:
                 # item without image_link
-                l.add_css('id', 'td:nth-child(1) a::text')
+                l.add_css('item_id', 'td:nth-child(1) a::text')
                 l.add_css('name', 'td:nth_child(2)::text')
                 l.add_css('genre', 'td:nth_child(3)::text')
                 l.add_css('equipment_location', 'td:nth_child(4) span::text')
