@@ -10,7 +10,7 @@ def send_request():
     running = json.loads(resp.text)['running']
     if not running:
         ret = requests.post('http://localhost:6800/schedule.json', data={'project':'app', 'spider':'store'})
-        print(ret.t)
+        print(ret.text)
         return ret.text
 
 def job():
@@ -20,7 +20,8 @@ def job():
         return
     send_request()
 
-schedule.every(10).minutes.do(job)
+schedule.every(15).minutes.do(job)
+schedule.run_all()
 
 while True:
     schedule.run_pending()
