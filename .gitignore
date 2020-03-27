@@ -110,6 +110,7 @@ venv.bak/
 whoosh_index/
 media/
 static/
+migrations/
 
 # VSCode
 .vscode/
@@ -123,3 +124,7 @@ my.cnf
 
 # ordinro_scrapy
 cookies.json
+log.txt
+dbs
+
+test.py

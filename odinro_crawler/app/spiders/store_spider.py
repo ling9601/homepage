@@ -29,7 +29,7 @@ class StoreSpider(scrapy.Spider):
         page_num_string = response.css('#ranking-page p::text') .get()
         num = int(re.findall(r'\d+', page_num_string)[1])
 
-        for i in range(2):
+        for i in range(num):
             yield scrapy.Request(url=self.base_url.format(i+1), callback=self.parse_store_id, cookies=self.cookies, dont_filter=True)
 
     def parse_store_id(self, response):
@@ -81,7 +81,9 @@ class StoreSpider(scrapy.Spider):
         return spider
     def spider_closed(self, spider):
         self.scrapy_item.end_time = datetime.datetime.now(tz=pytz.timezone('Asia/Tokyo'))
-        self.scrapy_item.item_num = spider.crawler.stats.get_stats()['item_scraped_count']
+        stats = spider.crawler.stats.get_stats()
+        self.scrapy_item.item_num = stats['item_scraped_count']
+        self.scrapy_item.time_cost = stats['elapsed_time_seconds']
         self.scrapy_item.save(force_insert=True)
         spider.logger.info('Spider closed: %s', spider.name)
 

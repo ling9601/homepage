@@ -36,3 +36,4 @@ class ScrapyItem(models.Model):
     start_time = models.DateTimeField(primary_key=True)
     end_time = models.DateTimeField()
     item_num = models.IntegerField()
+    time_cost = models.FloatField()

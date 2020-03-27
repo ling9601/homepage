@@ -31,6 +31,8 @@ urlpatterns = [
     path('users/',include('django.contrib.auth.urls')),
 
     path('accounts/',include('allauth.urls')),
+
+    path('crawler/', include('crawler.urls')),
 ]
 
 # open access to media file,only under DEBUG mode
