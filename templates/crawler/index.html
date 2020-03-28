@@ -1,0 +1,111 @@
+{% extends 'crawler/base.html' %}
+{% load static %}
+{% load crawler_extras %}
+
+
+{% block head %}
+
+<style>
+/**
+ * 13.0 - Pagination
+ */
+ .pagination-simple {
+    padding-left: 30px;
+    font-size: 16px;
+}
+
+.pagination ul {
+    list-style: none;
+}
+
+.pagination ul li {
+    display: inline-block;
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+.current a {
+    color: red;
+}
+</style>
+
+{% endblock head %}
+
+{% block main %}
+<div class="container-fluid">
+    <div class="panel-group" id="accordion">
+        <div class="accordion" id="accordionExample">
+            {% for wanted_item in wanted_item_list %}
+                {% if wanted_item.catcheditem_set.all %}
+                <div class="card">
+                    <div class="card-header" id="heading{{wanted_item.id}}">
+                        <h2 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse{{wanted_item.id}}" aria-expanded="false" aria-controls="collapse{{wanted_item.id}}">
+                            {{wanted_item.item_id}}({{wanted_item.catcheditem_set.all.0.store_item.name}}) | {{wanted_item.upper_price | price2string}} | {{ wanted_item.level }} | {{ wanted_item.time }} | ( {{wanted_item.catcheditem_set.all.count}} )
+                        </button>
+                        </h2>
+                    </div>
+                    
+                    <div id="collapse{{wanted_item.id}}" class="collapse" aria-labelledby="heading{{wanted_item.id}}" data-parent="#accordionExample">
+                        <div class="card-body">
+                            {% for catched_item in wanted_item.catcheditem_set.all %}
+                            <div>
+                                {{catched_item.store_item.price | price2string}} ({{catched_item.store_item.num}}) | {{catched_item.store_item.level}} | {{catched_item.store_item.hole_1}} | {{catched_item.store_item.hole_2}} | {{catched_item.store_item.hole_3}} | {{catched_item.store_item.hole_4}} | {{catched_item.store_item.store_name}}({{catched_item.store_item.position}})
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="card">
+                    <div class="card-header" id="heading{{wanted_item.id}}">
+                        <h2 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse{{wanted_item.id}}" aria-expanded="false" aria-controls="collapse{{wanted_item.id}}">
+                            {{wanted_item.item_id}} | {{wanted_item.upper_price | price2string}} | {{ wanted_item.level }} | {{ wanted_item.time }}
+                        </button>
+                        </h2>
+                    </div>
+                    
+                    <div id="collapse{{wanted_item.id}}" class="collapse" aria-labelledby="heading{{wanted_item.id}}" data-parent="#accordionExample">
+                        <div class="card-body">
+                            Nothing
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% empty %}
+            <b>Nothing</b>
+            {% endfor %}
+        </div>
+    </div>
+    {% if is_paginated %}
+
+    <div class="pagination">
+      {% if first %}
+        <a href="?page=1">1</a>
+      {% endif %}
+      {% if left %}
+        {% if left_has_more %}
+            <span>...</span>
+        {% endif %}
+        {% for i in left %}
+            <a href="?page={{ i }}">{{ i }}</a>
+        {% endfor %}
+      {% endif %}
+      <a href="?page={{ page_obj.number }}" style="color: red">{{ page_obj.number }}</a>
+      {% if right %}
+        {% for i in right %}
+            <a href="?page={{ i }}">{{ i }}</a>
+        {% endfor %}
+        {% if right_has_more %}
+            <span>...</span>
+        {% endif %}
+      {% endif %}
+      {% if last %}
+        <a href="?page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a>
+      {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock main %}

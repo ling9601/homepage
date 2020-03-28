@@ -1,6 +1,13 @@
 from django.db import models
 
+class ScrapyItem(models.Model):
+    start_time = models.DateTimeField(primary_key=True)
+    end_time = models.DateTimeField(null=True)
+    item_num = models.IntegerField(null=True)
+    time_cost = models.FloatField(null=True)
+
 class StoreItem_dj(models.Model):
+    # Store item
     store_name = models.CharField(max_length=100)
     store_id = models.IntegerField()
     position = models.CharField(max_length=100)
@@ -14,9 +21,14 @@ class StoreItem_dj(models.Model):
     level = models.IntegerField()
     price = models.IntegerField()
     num = models.IntegerField()
-    time = models.DateTimeField()
+
+    scrapy_item = models.ForeignKey(
+        ScrapyItem,
+        models.CASCADE,
+    )
 
 class BaseItem_dj(models.Model):
+    # Database item
     item_id = models.IntegerField(primary_key=True)
     image_link = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
@@ -32,8 +44,24 @@ class BaseItem_dj(models.Model):
     hole_num = models.IntegerField()
     refinable = models.BooleanField(null=True)
 
-class ScrapyItem(models.Model):
-    start_time = models.DateTimeField(primary_key=True)
-    end_time = models.DateTimeField()
-    item_num = models.IntegerField()
-    time_cost = models.FloatField()
+class WantedItem(models.Model):
+    item_id = models.IntegerField()
+    upper_price = models.IntegerField()
+    level = models.IntegerField(default=0)
+    time = models.DateTimeField(auto_now=True)
+    # string compose of hole-name seperate by comma used for query
+    ### hole_string query to be finish ###
+    hole_string = models.CharField(max_length=400, blank=True)
+
+class CatchedItem(models.Model):
+    wanted_item = models.ForeignKey(
+        WantedItem,
+        models.CASCADE,
+    )
+    store_item = models.OneToOneField(
+        StoreItem_dj,
+        models.CASCADE,
+        primary_key=True,
+    )
+    time = models.DateTimeField(auto_now=True)
+    

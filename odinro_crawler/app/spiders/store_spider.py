@@ -7,7 +7,7 @@ import datetime
 import re
 import pytz
 
-from crawler.models import ScrapyItem
+from crawler.models import *
 
 class StoreSpider(scrapy.Spider):
     name = 'store'
@@ -21,6 +21,8 @@ class StoreSpider(scrapy.Spider):
 
         self.start_time = datetime.datetime.now(tz=pytz.timezone('Asia/Tokyo'))
         self.scrapy_item = ScrapyItem(start_time=self.start_time)
+        # save it at first for the foreign key in StoreItem
+        self.scrapy_item.save()
         
         yield scrapy.Request(url=self.base_url.format(1), callback=self.parse_page_num, cookies=self.cookies)
         # yield scrapy.Request(url='https://odinro.online/vending/viewshop/?id=134', callback=self.parse, cookies=self.cookies, meta={'store_id':134})
@@ -69,7 +71,6 @@ class StoreSpider(scrapy.Spider):
             l.add_value('position', position)
             l.add_value('level', level)
             l.add_value('hole_num', hole_num)        
-            l.add_value('time', self.start_time)    
 
             item = l.load_item()
             yield item
@@ -80,36 +81,34 @@ class StoreSpider(scrapy.Spider):
         crawler.signals.connect(spider.spider_closed, signal=signals.spider_closed)
         return spider
     def spider_closed(self, spider):
+        
+        # save scrapy_item
         self.scrapy_item.end_time = datetime.datetime.now(tz=pytz.timezone('Asia/Tokyo'))
         stats = spider.crawler.stats.get_stats()
         self.scrapy_item.item_num = stats['item_scraped_count']
         self.scrapy_item.time_cost = stats['elapsed_time_seconds']
-        self.scrapy_item.save(force_insert=True)
-        spider.logger.info('Spider closed: %s', spider.name)
+        self.scrapy_item.save()
 
+        # check for wanted_items
+        wanted_items = WantedItem.objects.all()
 
-    # def parse(self, response):
-    #     raw_items = response.css('table[class*=db-table] tbody tr') 
-        
-    #     for raw_item in raw_items:
-    #         l = StoreItemLoader(item=StoreItem(), raw_item)
+        spider.logger.info('WantedItem({})'.format(len(wanted_items)))
+        catch_count = 0
+        for wanted_item in wanted_items:
+            # delete all previous cathed_item
+            wanted_item.catcheditem_set.all().delete()
             
-    #         l.add_css('store_name', 'td:nth-child(1) a::text')
-    #         l.add_css('seller_name', 'td:nth-child(2)::text ')
-    #         l.add_css('position', 'td:nth-child(3)::text')
-    #         l.add_css('name', 'td:nth-child(4) a::text')
-    #         l.add_css('item_id', 'td:nth-child(4) a::attr(href)')
-    #         l.add_css('hole_1', 'td:nth-child(5) * ::text')
-    #         l.add_css('hole_2', 'td:nth-child(6) * ::text')
-    #         l.add_css('hole_3', 'td:nth-child(7) * ::text')
-    #         l.add_css('hole_4', 'td:nth-child(8) * ::text')
-    #         l.add_css('price', 'td:nth-child(9)::text')
-    #         l.add_css('num', 'td:nth-child(10)::text')  
-    #         l.add_value('time', self.start_time)        
+            q = self.scrapy_item.storeitem_dj_set.filter(
+                item_id = wanted_item.item_id,
+                price__lte = wanted_item.upper_price,
+                level = wanted_item.level
+            )
+            for store_item in q:
+                CatchedItem(
+                    wanted_item = wanted_item,
+                    store_item = store_item
+                ).save()
 
-    #         level = raw_item.css('td:nth-child(4) strong::text').get()
-    #         level = level if level else '0'
-    #         l.add_value('level', level)
-
-    #         item = l.load_item()
-    #         yield item
+                catch_count += 1
+        
+        spider.logger.info('CatchedItem({})'.format(len(wanted_items)))

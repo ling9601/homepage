@@ -11,7 +11,7 @@ from app.items import StoreItem, BaseItem
 class DjangoPipeLine(object):
     def process_item(self, item, spider):
         if isinstance(item, StoreItem):
-            StoreItem_dj(**item).save(force_insert=True)
+            StoreItem_dj(**item, scrapy_item=spider.scrapy_item).save(force_insert=True)
         elif isinstance(item, BaseItem):
             BaseItem_dj(**item).save(force_insert=True)
         return item

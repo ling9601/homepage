@@ -1,6 +1,11 @@
 from django.shortcuts import render, HttpResponse
-# from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
+
+from django.contrib.auth.mixins import PermissionRequiredMixin
+
+from blog.views import ListViewPaginator
+
+from .models import *
 
 import requests
 import json
@@ -17,3 +22,14 @@ def status(request):
 def get_log(request, id):
     resp = requests.get('http://localhost:6800/logs/app/store/{}.log'.format(id))
     return HttpResponse(resp, content_type='text/plain')
+
+
+class WantedItemIndexVIew(PermissionRequiredMixin,ListViewPaginator):
+    permission_required = 'crawler.view_scrapyitem'
+    model = WantedItem
+    
+    template_name = 'crawler/index.html'
+
+    context_object_name = 'wanted_item_list'
+
+    paginate_by = 5
