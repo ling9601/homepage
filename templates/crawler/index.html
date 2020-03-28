@@ -110,7 +110,7 @@
                             {% for catched_item in wanted_item.catcheditem_set.all %}
                             <tr>
                                 <td>
-                                    <a href="https://odinro.online/vending/viewshop/?id={{catched_item.store_item.id}}" target="_blank">{{catched_item.store_item.store_name}}</a>
+                                    <a href="https://odinro.online/vending/viewshop/?id={{catched_item.store_item.store_id}}" target="_blank">{{catched_item.store_item.store_name}}</a>
                                 </td>
                                 <td>{{catched_item.store_item.position}}</td>
                                 <td>{{catched_item.store_item.hole_1}}</td>
