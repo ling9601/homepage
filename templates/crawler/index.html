@@ -40,8 +40,9 @@
                 <div class="card">
                     <div class="card-header" id="heading{{wanted_item.id}}">
                         <h2 class="mb-0">
-                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse{{wanted_item.id}}" aria-expanded="false" aria-controls="collapse{{wanted_item.id}}">
-                            {{wanted_item.item_id}}({{wanted_item.catcheditem_set.all.0.store_item.name}}) | {{wanted_item.upper_price | price2string}} | {{ wanted_item.level }} | {{ wanted_item.time }} | ( {{wanted_item.catcheditem_set.all.count}} )
+                        <button class="btn collapsed" type="button" data-toggle="collapse" data-target="#collapse{{wanted_item.id}}" aria-expanded="false" aria-controls="collapse{{wanted_item.id}}">
+                            <a href="https://odinro.online/item/view/?id={{wanted_item.item_id}}" target="_blank">{{wanted_item.item_id}}({{wanted_item.catcheditem_set.all.0.store_item.name}})</a>
+                             | {{wanted_item.upper_price | price2string}} | {{ wanted_item.level }} | {{ wanted_item.time }} | ( {{wanted_item.catcheditem_set.all.count}} ) | {{wanted_item.lowest_price | price2string}} ~ {{wanted_item.highest_price | price2string}} | {{wanted_item.avg_price | price2string}}
                         </button>
                         </h2>
                     </div>
@@ -50,7 +51,8 @@
                         <div class="card-body">
                             {% for catched_item in wanted_item.catcheditem_set.all %}
                             <div>
-                                {{catched_item.store_item.price | price2string}} ({{catched_item.store_item.num}}) | {{catched_item.store_item.level}} | {{catched_item.store_item.hole_1}} | {{catched_item.store_item.hole_2}} | {{catched_item.store_item.hole_3}} | {{catched_item.store_item.hole_4}} | {{catched_item.store_item.store_name}}({{catched_item.store_item.position}})
+                                {{catched_item.store_item.price | price2string}} ({{catched_item.store_item.num}}) | {{catched_item.store_item.level}} | {{catched_item.store_item.hole_1}} | {{catched_item.store_item.hole_2}} | {{catched_item.store_item.hole_3}} | {{catched_item.store_item.hole_4}} |
+                                <a href="https://odinro.online/vending/viewshop/?id={{catched_item.store_item.store_id}}" target="_blank">{{catched_item.store_item.store_name}}({{catched_item.store_item.position}})</a>
                             </div>
                             {% endfor %}
                         </div>
@@ -60,8 +62,9 @@
                 <div class="card">
                     <div class="card-header" id="heading{{wanted_item.id}}">
                         <h2 class="mb-0">
-                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse{{wanted_item.id}}" aria-expanded="false" aria-controls="collapse{{wanted_item.id}}">
-                            {{wanted_item.item_id}} | {{wanted_item.upper_price | price2string}} | {{ wanted_item.level }} | {{ wanted_item.time }}
+                        <button class="btn collapsed" type="button" data-toggle="collapse" data-target="#collapse{{wanted_item.id}}" aria-expanded="false" aria-controls="collapse{{wanted_item.id}}">
+                        <a href="https://odinro.online/item/view/?id={{wanted_item.item_id}}" target="_blank">{{wanted_item.item_id}}</a>
+                             | {{wanted_item.upper_price | price2string}} | {{ wanted_item.level }} | {{ wanted_item.time }}
                         </button>
                         </h2>
                     </div>

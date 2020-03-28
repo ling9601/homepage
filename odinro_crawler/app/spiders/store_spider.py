@@ -6,6 +6,7 @@ from app.utils.cookies import get_cookies
 import datetime
 import re
 import pytz
+import time
 
 from crawler.models import *
 
@@ -90,6 +91,7 @@ class StoreSpider(scrapy.Spider):
         self.scrapy_item.save()
 
         # check for wanted_items
+        start_time = time.time()
         wanted_items = WantedItem.objects.all()
 
         spider.logger.info('WantedItem({})'.format(len(wanted_items)))
@@ -98,10 +100,29 @@ class StoreSpider(scrapy.Spider):
             # delete all previous cathed_item
             wanted_item.catcheditem_set.all().delete()
             
+            # do some statistics
+            price_list = []
+            items = self.scrapy_item.storeitem_dj_set.filter(
+                item_id = wanted_item.item_id,
+                level = wanted_item.level
+            )
+            if items:
+                for item in items:
+                    price_list.append((item.price, item.num))
+                price_list = sorted(price_list, key=lambda a: a[0])
+                sumed_price_list = [a[0]*a[1] for a in price_list]
+                
+                # update wanted_item
+                wanted_item.num = sum([a[1] for a in price_list])
+                wanted_item.highest_price = price_list[-1][0]
+                wanted_item.lowest_price = price_list[0][0]
+                wanted_item.avg_price = sum(sumed_price_list)/wanted_item.num
+                wanted_item.save()
+                
             q = self.scrapy_item.storeitem_dj_set.filter(
                 item_id = wanted_item.item_id,
                 price__lte = wanted_item.upper_price,
-                level = wanted_item.level
+                level__gte = wanted_item.level
             )
             for store_item in q:
                 CatchedItem(
@@ -110,5 +131,7 @@ class StoreSpider(scrapy.Spider):
                 ).save()
 
                 catch_count += 1
-        
+
         spider.logger.info('CatchedItem({})'.format(len(wanted_items)))
+        spider.logger.info('Time cost({:.2f})'.format(time.time()-start_time))
+

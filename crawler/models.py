@@ -52,6 +52,10 @@ class WantedItem(models.Model):
     # string compose of hole-name seperate by comma used for query
     ### hole_string query to be finish ###
     hole_string = models.CharField(max_length=400, blank=True)
+    highest_price = models.IntegerField(null=True, blank=True)
+    lowest_price = models.IntegerField(null=True, blank=True)
+    avg_price = models.FloatField(null=True, blank=True)
+    num = models.IntegerField(null=True, blank=True)
 
 class CatchedItem(models.Model):
     wanted_item = models.ForeignKey(
