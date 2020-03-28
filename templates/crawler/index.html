@@ -36,13 +36,24 @@
     <div class="panel-group" id="accordion">
         <div class="accordion" id="accordionExample">
             {% for wanted_item in wanted_item_list %}
-                {% if wanted_item.catcheditem_set.all %}
+
                 <div class="card">
                     <div class="card-header" id="heading{{wanted_item.id}}">
                         <h2 class="mb-0">
                         <button class="btn collapsed" type="button" data-toggle="collapse" data-target="#collapse{{wanted_item.id}}" aria-expanded="false" aria-controls="collapse{{wanted_item.id}}">
-                            <a href="https://odinro.online/item/view/?id={{wanted_item.item_id}}" target="_blank">{{wanted_item.item_id}}({{wanted_item.catcheditem_set.all.0.store_item.name}})</a>
-                             | {{wanted_item.upper_price | price2string}} | {{ wanted_item.level }} | {{ wanted_item.time }} | ( {{wanted_item.catcheditem_set.all.count}} ) | {{wanted_item.lowest_price | price2string}} ~ {{wanted_item.highest_price | price2string}} | {{wanted_item.avg_price | price2string}}
+                            <a href="https://odinro.online/item/view/?id={{wanted_item.item_id}}" target="_blank">
+                                {% if wanted_item.catcheditem_set.all %}
+                                    {{wanted_item.item_id}}({{wanted_item.catcheditem_set.all.0.store_item.name}})
+                                {% else %}
+                                    {{wanted_item.item_id}}
+                                {% endif %}
+                            </a>
+                             | {{wanted_item.upper_price | price2string}} | {{ wanted_item.level }} | {{ wanted_item.time }} | ( {{wanted_item.catcheditem_set.all.count}} )
+                                {% if wanted_item.highest_price %}
+                                    <p>{{wanted_item.lowest_price | price2string}} ~ {{wanted_item.highest_price | price2string}} | {{wanted_item.avg_price | price2string}} | {{wanted_item.num}}</p>
+                                {% else %}
+                                    <p>Not available</p>
+                                {% endif %}
                         </button>
                         </h2>
                     </div>
@@ -58,24 +69,7 @@
                         </div>
                     </div>
                 </div>
-                {% else %}
-                <div class="card">
-                    <div class="card-header" id="heading{{wanted_item.id}}">
-                        <h2 class="mb-0">
-                        <button class="btn collapsed" type="button" data-toggle="collapse" data-target="#collapse{{wanted_item.id}}" aria-expanded="false" aria-controls="collapse{{wanted_item.id}}">
-                            <a href="https://odinro.online/item/view/?id={{wanted_item.item_id}}" target="_blank">{{wanted_item.item_id}}</a>
-                            | {{wanted_item.upper_price | price2string}} | {{ wanted_item.level }} | {{ wanted_item.time }} | ( {{wanted_item.catcheditem_set.all.count}} ) | {{wanted_item.lowest_price | price2string}} ~ {{wanted_item.highest_price | price2string}} | {{wanted_item.avg_price | price2string}}
-                        </button>
-                        </h2>
-                    </div>
-                    
-                    <div id="collapse{{wanted_item.id}}" class="collapse" aria-labelledby="heading{{wanted_item.id}}" data-parent="#accordionExample">
-                        <div class="card-body">
-                            Nothing
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
+
             {% empty %}
             <b>Nothing</b>
             {% endfor %}
