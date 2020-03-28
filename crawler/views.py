@@ -32,4 +32,4 @@ class WantedItemIndexVIew(PermissionRequiredMixin,ListViewPaginator):
 
     context_object_name = 'wanted_item_list'
 
-    paginate_by = 5
+    paginate_by = 20
