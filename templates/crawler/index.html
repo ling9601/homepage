@@ -63,8 +63,8 @@
                     <div class="card-header" id="heading{{wanted_item.id}}">
                         <h2 class="mb-0">
                         <button class="btn collapsed" type="button" data-toggle="collapse" data-target="#collapse{{wanted_item.id}}" aria-expanded="false" aria-controls="collapse{{wanted_item.id}}">
-                        <a href="https://odinro.online/item/view/?id={{wanted_item.item_id}}" target="_blank">{{wanted_item.item_id}}</a>
-                             | {{wanted_item.upper_price | price2string}} | {{ wanted_item.level }} | {{ wanted_item.time }}
+                            <a href="https://odinro.online/item/view/?id={{wanted_item.item_id}}" target="_blank">{{wanted_item.item_id}}</a>
+                            | {{wanted_item.upper_price | price2string}} | {{ wanted_item.level }} | {{ wanted_item.time }} | ( {{wanted_item.catcheditem_set.all.count}} ) | {{wanted_item.lowest_price | price2string}} ~ {{wanted_item.highest_price | price2string}} | {{wanted_item.avg_price | price2string}}
                         </button>
                         </h2>
                     </div>
