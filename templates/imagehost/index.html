@@ -4,8 +4,6 @@
 
 {% block head %}
 
-<link rel="stylesheet" href="{% static 'imagehost/css/bootstrap-select.min.css' %}">
-
 <style>
     #image-list-wrapper {
         color: white;
@@ -112,7 +110,6 @@
 {% endblock main %}
 
 {% block rear %}
-<script src="{% static 'imagehost/js/bootstrap-select.min.js' %}"></script>
 <script>
     $("#resetAnchor").on("click", function () {
         $("#searchform select").val('default').selectpicker("refresh");

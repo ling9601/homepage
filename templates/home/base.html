@@ -20,6 +20,8 @@
 
   <script src="https://kit.fontawesome.com/d456065785.js" crossorigin="anonymous"></script>
 
+  <link href="{% static 'home/css/bootstrap-select.min.css' %}" rel="stylesheet">
+
   {% block base_head %}
   {% endblock base_head %}
 
@@ -39,8 +41,8 @@
         <a href="{% url 'home:index' %}" class="list-group-item list-group-item-action bg-light">Home</a>
         <a href="{% url 'imagehost:index' %}" class="list-group-item list-group-item-action bg-light">ImageHost</a>
         <a href="{% url 'blog:index' %}" class="list-group-item list-group-item-action bg-light">Blog</a>
-        <a href="http://18.219.156.84:5000/" class="list-group-item list-group-item-action bg-light">Jupyter notebook</a>
         {% if user.is_superuser %}
+        <a href="{% url 'crawler:index' %}" class="list-group-item list-group-item-action bg-light">Crawler</a>
         <a href="{%url 'home:debug' %}" class="list-group-item list-group-item-action bg-danger">DEBUG</a>
         {% endif %}
       </div>
@@ -123,13 +125,15 @@
   {% block rear %}
   {% endblock rear %}
 
-  <!-- Menu Toggle Script -->
-  <script>
-    $("#menu-toggle").click(function (e) {
-      e.preventDefault();
-      $("#wrapper").toggleClass("toggled");
-    });
-  </script>
+<!-- Menu Toggle Script -->
+<script>
+  $("#menu-toggle").click(function (e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
+  });
+</script>
+
+<script src="{% static 'home/js/bootstrap-select.min.js' %}"></script>
 
 </body>
 

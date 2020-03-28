@@ -11,7 +11,7 @@ class ScrapyItemAdmin(admin.ModelAdmin):
     list_display = ['start_time', 'time_cost', 'item_num']
 
 class WantedItemAdmin(admin.ModelAdmin):
-    list_display = ['item_id', 'level', 'upper_price', 'time']
+    list_display = ['base_item', 'level', 'upper_price', 'time']
 
 class CatchedItemAdmin(admin.ModelAdmin):
     list_display = ['wanted_item', 'store_item', 'time']

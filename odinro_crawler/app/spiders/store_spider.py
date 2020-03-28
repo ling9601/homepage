@@ -103,7 +103,7 @@ class StoreSpider(scrapy.Spider):
             # do some statistics
             price_list = []
             items = self.scrapy_item.storeitem_dj_set.filter(
-                item_id = wanted_item.item_id,
+                item_id = wanted_item.base_item.pk,
                 level = wanted_item.level
             )
             if items:
@@ -118,9 +118,15 @@ class StoreSpider(scrapy.Spider):
                 wanted_item.lowest_price = price_list[0][0]
                 wanted_item.avg_price = sum(sumed_price_list)/wanted_item.num
                 wanted_item.save()
+            else:
+                wanted_item.num = 0
+                wanted_item.highest_price = None
+                wanted_item.lowest_price = None
+                wanted_item.avg_price = None
+                wanted_item.save()
                 
             q = self.scrapy_item.storeitem_dj_set.filter(
-                item_id = wanted_item.item_id,
+                item_id = wanted_item.base_item.pk,
                 price__lte = wanted_item.upper_price,
                 level__gte = wanted_item.level
             )
@@ -132,6 +138,6 @@ class StoreSpider(scrapy.Spider):
 
                 catch_count += 1
 
-        spider.logger.info('CatchedItem({})'.format(len(wanted_items)))
+        spider.logger.info('CatchedItem({})'.format(catch_count))
         spider.logger.info('Time cost({:.2f})'.format(time.time()-start_time))
 

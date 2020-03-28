@@ -6,6 +6,9 @@ class ScrapyItem(models.Model):
     item_num = models.IntegerField(null=True)
     time_cost = models.FloatField(null=True)
 
+    def __str__(self):
+        return str(self.start_time)
+
 class StoreItem_dj(models.Model):
     # Store item
     store_name = models.CharField(max_length=100)
@@ -26,6 +29,8 @@ class StoreItem_dj(models.Model):
         ScrapyItem,
         models.CASCADE,
     )
+    def __str__(self):
+        return self.name
 
 class BaseItem_dj(models.Model):
     # Database item
@@ -44,8 +49,16 @@ class BaseItem_dj(models.Model):
     hole_num = models.IntegerField()
     refinable = models.BooleanField(null=True)
 
+    def __str__(self):
+        return "{} ({})".format(self.name, self.item_id)
+
+    
+
 class WantedItem(models.Model):
-    item_id = models.IntegerField()
+    base_item = models.ForeignKey(
+        BaseItem_dj,
+        on_delete=models.CASCADE,
+    )
     upper_price = models.IntegerField()
     level = models.IntegerField(default=0)
     time = models.DateTimeField(auto_now=True)
@@ -56,6 +69,9 @@ class WantedItem(models.Model):
     lowest_price = models.IntegerField(null=True, blank=True)
     avg_price = models.FloatField(null=True, blank=True)
     num = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return self.base_item.name
 
 class CatchedItem(models.Model):
     wanted_item = models.ForeignKey(
@@ -68,4 +84,6 @@ class CatchedItem(models.Model):
         primary_key=True,
     )
     time = models.DateTimeField(auto_now=True)
-    
+
+    def __str__(self):
+        return self.wanted_item.base_item.name

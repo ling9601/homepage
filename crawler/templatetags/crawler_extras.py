@@ -4,4 +4,8 @@ register = template.Library()
 
 @register.filter
 def price2string(price):
-    return '{:20,d} Z'.format(int(price))
+    # price /= 1000
+    if price:
+        return '{:20,d}'.format(int(price))
+    else:
+        return None

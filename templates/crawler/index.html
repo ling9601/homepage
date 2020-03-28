@@ -33,48 +33,108 @@
 
 {% block main %}
 <div class="container-fluid">
-    <div class="panel-group" id="accordion">
-        <div class="accordion" id="accordionExample">
+    <a href="{% url 'crawler:create' %}" class="btn btn-info">Add</a>
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">道具ID</th>
+            <th scope="col">道具名</th>
+            <th scope="col">精炼等级</th>
+            <th scope="col">期望价格</th>
+            <th scope="col">寻得数</th>
+            <th scope="col">现存数</th>
+            <th scope="col">最高价</th>
+            <th scope="col">最低价</th>
+            <th scope="col">均价</th>
+            <th scope="col">更新时间</th>
+            <th scope="col">删除</th>
+          </tr>
+        </thead>
+        <tbody>
             {% for wanted_item in wanted_item_list %}
-
-                <div class="card">
-                    <div class="card-header" id="heading{{wanted_item.id}}">
-                        <h2 class="mb-0">
-                        <button class="btn collapsed" type="button" data-toggle="collapse" data-target="#collapse{{wanted_item.id}}" aria-expanded="false" aria-controls="collapse{{wanted_item.id}}">
-                            <a href="https://odinro.online/item/view/?id={{wanted_item.item_id}}" target="_blank">
-                                {% if wanted_item.catcheditem_set.all %}
-                                    {{wanted_item.item_id}}({{wanted_item.catcheditem_set.all.0.store_item.name}})
-                                {% else %}
-                                    {{wanted_item.item_id}}
-                                {% endif %}
-                            </a>
-                             | {{wanted_item.upper_price | price2string}} | {{ wanted_item.level }} | {{ wanted_item.time }} | ( {{wanted_item.catcheditem_set.all.count}} )
-                                {% if wanted_item.highest_price %}
-                                    <p>{{wanted_item.lowest_price | price2string}} ~ {{wanted_item.highest_price | price2string}} | {{wanted_item.avg_price | price2string}} | {{wanted_item.num}}</p>
-                                {% else %}
-                                    <p>Not available</p>
-                                {% endif %}
-                        </button>
-                        </h2>
-                    </div>
-                    
-                    <div id="collapse{{wanted_item.id}}" class="collapse" aria-labelledby="heading{{wanted_item.id}}" data-parent="#accordionExample">
-                        <div class="card-body">
-                            {% for catched_item in wanted_item.catcheditem_set.all %}
-                            <div>
-                                {{catched_item.store_item.price | price2string}} ({{catched_item.store_item.num}}) | {{catched_item.store_item.level}} | {{catched_item.store_item.hole_1}} | {{catched_item.store_item.hole_2}} | {{catched_item.store_item.hole_3}} | {{catched_item.store_item.hole_4}} |
-                                <a href="https://odinro.online/vending/viewshop/?id={{catched_item.store_item.store_id}}" target="_blank">{{catched_item.store_item.store_name}}({{catched_item.store_item.position}})</a>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
+            <tr>
+                <th scope="row">
+                    <a href="https://odinro.online/item/view/?id={{wanted_item.base_item.pk}}" target="_blank">{{wanted_item.base_item.pk}}</a>
+                </th>
+                <td>
+                {% if wanted_item.catcheditem_set.all %}
+                <a class="btn btn-primary" data-toggle="collapse" href="#multi{{wanted_item.pk}}" role="button" aria-expanded="false" aria-controls="multi{{wanted_item.pk}}">
+                    {{wanted_item.base_item.name}}
+                </a>
+                {% else %}
+                {{wanted_item.base_item.name}}
+                {% endif %}
+                </td>
+                <td>{{wanted_item.level}}</td>
+                <td>{{wanted_item.upper_price|price2string}}</td>
+                <td>{{wanted_item.catcheditem_set.all.count}}</td>
+                <td>{{wanted_item.num}}</td>
+                <td>{{wanted_item.highest_price|price2string}}</td>
+                <td>{{wanted_item.lowest_price|price2string}}</td>
+                <td>{{wanted_item.avg_price|price2string}}</td>
+                <td>{{wanted_item.time|date:"H:i n/d"}}</td>
+                <td>
+                    <form method="POST" action="{% url 'crawler:delete' wanted_item.pk %}">
+                        {% csrf_token %}
+                        <input class="btn btn-danger" type="submit" value="Confirm">
+                    </form>
+                </td>
+            </tr>
             {% empty %}
-            <b>Nothing</b>
             {% endfor %}
+
+        </tbody>
+    </table>
+    {% for wanted_item in wanted_item_list %}
+        {% if wanted_item.catcheditem_set.all %}
+        <div class="row justify-content-md-center">
+            <div class="collapse multi-collapse col-md-12" id="multi{{wanted_item.pk}}">
+            <div class="card">
+                <h5 class="card-header">{{wanted_item.base_item.name}}</h5>
+                <div class="card card-body">
+                    <table class="table-bordered">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">商店名称</th>
+                                <th scope="col">坐标信息</th>
+                                <th scope="col">卡槽1</th>
+                                <th scope="col">卡槽2</th>
+                                <th scope="col">卡槽3</th>
+                                <th scope="col">卡槽4</th>
+                                <th scope="col">数量</th>
+                                <th scope="col">单价</th>
+                            </tr>
+    
+                        </thead>
+                        <tbody>
+                            {% for catched_item in wanted_item.catcheditem_set.all %}
+                            <tr>
+                                <td>
+                                    <a href="https://odinro.online/vending/viewshop/?id={{catched_item.store_item.id}}" target="_blank">{{catched_item.store_item.store_name}}</a>
+                                </td>
+                                <td>{{catched_item.store_item.position}}</td>
+                                <td>{{catched_item.store_item.hole_1}}</td>
+                                <td>{{catched_item.store_item.hole_2}}</td>
+                                <td>{{catched_item.store_item.hole_3}}</td>
+                                <td>{{catched_item.store_item.hole_4}}</td>
+                                <td>{{catched_item.store_item.num}}</td>
+                                <td>{{catched_item.store_item.price}}</td>
+                            </tr>
+                            {% empty %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+    
+                </div>
+            </div>
+
+            </div>
         </div>
-    </div>
+        {% else %}
+        {% endif %}
+    {% empty %}
+    {% endfor %}
+
     {% if is_paginated %}
 
     <div class="pagination">
