@@ -53,21 +53,21 @@
         <tbody>
             {% for wanted_item in wanted_item_list %}
             <tr>
-                <th scope="row">
+                <td scope="row">
                     <a href="https://odinro.online/item/view/?id={{wanted_item.base_item.pk}}" target="_blank">{{wanted_item.base_item.pk}}</a>
-                </th>
+                </td>
                 <td>
-                {% if wanted_item.catcheditem_set.all %}
+                {% if wanted_item.store_items.all %}
                 <a class="btn btn-primary" data-toggle="collapse" href="#multi{{wanted_item.pk}}" role="button" aria-expanded="false" aria-controls="multi{{wanted_item.pk}}">
                     {{wanted_item.base_item.name}}
                 </a>
                 {% else %}
-                {{wanted_item.base_item.name}}
+                    {{wanted_item.base_item.name}}
                 {% endif %}
                 </td>
                 <td>{{wanted_item.level}}</td>
                 <td>{{wanted_item.upper_price|price2string}}</td>
-                <td>{% get_total_num wanted_item %}</td>
+                <td>{{ wanted_item.store_items.count }}</td>
                 <td>{{wanted_item.num}}</td>
                 <td>{{wanted_item.highest_price|price2string}}</td>
                 <td>{{wanted_item.lowest_price|price2string}}</td>
@@ -86,7 +86,7 @@
         </tbody>
     </table>
     {% for wanted_item in wanted_item_list %}
-        {% if wanted_item.catcheditem_set.all %}
+        {% if wanted_item.store_items.all %}
         <div class="row justify-content-md-center">
             <div class="collapse multi-collapse col-md-12" id="multi{{wanted_item.pk}}">
             <div class="card">
@@ -107,18 +107,18 @@
     
                         </thead>
                         <tbody>
-                            {% for catched_item in wanted_item.catcheditem_set.all %}
+                            {% for store_item in wanted_item.store_items.all %}
                             <tr>
                                 <td>
-                                    <a href="https://odinro.online/vending/viewshop/?id={{catched_item.store_item.store_id}}" target="_blank">{{catched_item.store_item.store_name}}</a>
+                                    <a href="https://odinro.online/vending/viewshop/?id={{store_item.store_id}}" target="_blank">{{store_item.store_name}}</a>
                                 </td>
-                                <td>{{catched_item.store_item.position}}</td>
-                                <td>{{catched_item.store_item.hole_1}}</td>
-                                <td>{{catched_item.store_item.hole_2}}</td>
-                                <td>{{catched_item.store_item.hole_3}}</td>
-                                <td>{{catched_item.store_item.hole_4}}</td>
-                                <td>{{catched_item.store_item.num}}</td>
-                                <td>{{catched_item.store_item.price}}</td>
+                                <td>{{store_item.position}}</td>
+                                <td>{{store_item.hole_1}}</td>
+                                <td>{{store_item.hole_2}}</td>
+                                <td>{{store_item.hole_3}}</td>
+                                <td>{{store_item.hole_4}}</td>
+                                <td>{{store_item.num}}</td>
+                                <td>{{store_item.price}}</td>
                             </tr>
                             {% empty %}
                             {% endfor %}

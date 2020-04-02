@@ -8,10 +8,21 @@
 from crawler.models import StoreItem_dj, BaseItem_dj
 from app.items import StoreItem, BaseItem
 
+from crawler.models import BaseItem_dj
+from django.core.exceptions import ObjectDoesNotExist
+
 class DjangoPipeLine(object):
     def process_item(self, item, spider):
         if isinstance(item, StoreItem):
-            StoreItem_dj(**item, scrapy_item=spider.scrapy_item).save(force_insert=True)
+            try:
+                data = dict(item)
+                item_id = data.pop('item_id')
+                base_item = BaseItem_dj.objects.get(pk=item_id)
+                StoreItem_dj(**data, scrapy_item=spider.scrapy_item, base_item=base_item).save(force_insert=True)
+            except ObjectDoesNotExist as e:
+                spider.logger.warning('### {}({}) does not exit in the database ###'.format(data['name'],item_id))
+                spider.scrapy_item.fail_num += 1
+
         elif isinstance(item, BaseItem):
             BaseItem_dj(**item).save(force_insert=True)
         return item

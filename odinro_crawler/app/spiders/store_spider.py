@@ -99,12 +99,10 @@ class StoreSpider(scrapy.Spider):
         spider.logger.info('WantedItem({})'.format(len(wanted_items)))
         catch_count = 0
         for wanted_item in wanted_items:
-            # delete all previous cathed_item
-            wanted_item.catcheditem_set.all().delete()
             
             # do some statistics
             items = self.scrapy_item.storeitem_dj_set.filter(
-                item_id = wanted_item.base_item.pk,
+                base_item = wanted_item.base_item,
                 level = wanted_item.level
             )
 
@@ -120,18 +118,14 @@ class StoreSpider(scrapy.Spider):
             
             # catched item
             q = self.scrapy_item.storeitem_dj_set.filter(
-                item_id = wanted_item.base_item.pk,
+                base_item = wanted_item.base_item,
                 price__lte = wanted_item.upper_price,
                 level__gte = wanted_item.level
             )
-            for store_item in q:
-                CatchedItem(
-                    wanted_item = wanted_item,
-                    store_item = store_item
-                ).save()
+            wanted_item.store_items.set(q)
 
-                catch_count += 1
+            catch_count += q.count()
 
-        spider.logger.info('CatchedItem({})'.format(catch_count))
+        spider.logger.info('catch_count({})'.format(catch_count))
         spider.logger.info('Time cost({:.2f})'.format(time.time()-start_time))
 
