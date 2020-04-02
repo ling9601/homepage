@@ -67,7 +67,7 @@
                 </td>
                 <td>{{wanted_item.level}}</td>
                 <td>{{wanted_item.upper_price|price2string}}</td>
-                <td>{{ wanted_item.store_items.count }}</td>
+                <td>{% get_total_num wanted_item %}</td>
                 <td>{{wanted_item.num}}</td>
                 <td>{{wanted_item.highest_price|price2string}}</td>
                 <td>{{wanted_item.lowest_price|price2string}}</td>
