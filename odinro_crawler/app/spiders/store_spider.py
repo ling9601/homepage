@@ -101,11 +101,17 @@ class StoreSpider(scrapy.Spider):
         for wanted_item in wanted_items:
             
             # do some statistics
-            store_items = self.scrapy_item.storeitem_dj_set.filter(
-                base_item = wanted_item.base_item,
-                level = wanted_item.level
-            )
-
+            # take level that <=4 as [0,4]
+            if wanted_item.level <= 4:
+                store_items = self.scrapy_item.storeitem_dj_set.filter(
+                    base_item = wanted_item.base_item,
+                    level__lt = 4
+                )
+            else:
+                store_items = self.scrapy_item.storeitem_dj_set.filter(
+                    base_item = wanted_item.base_item,
+                    level = wanted_item.level
+                )
             # attach 'sum_price'
             for item in store_items:
                 item.sum_price = item.price*item.num
