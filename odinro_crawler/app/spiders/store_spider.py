@@ -8,6 +8,8 @@ import re
 import pytz
 import time
 
+from django.db.models import Avg, Max, Min, Count
+
 from crawler.models import *
 
 class StoreSpider(scrapy.Spider):
@@ -101,30 +103,22 @@ class StoreSpider(scrapy.Spider):
             wanted_item.catcheditem_set.all().delete()
             
             # do some statistics
-            price_list = []
             items = self.scrapy_item.storeitem_dj_set.filter(
                 item_id = wanted_item.base_item.pk,
                 level = wanted_item.level
             )
-            if items:
-                for item in items:
-                    price_list.append((item.price, item.num))
-                price_list = sorted(price_list, key=lambda a: a[0])
-                sumed_price_list = [a[0]*a[1] for a in price_list]
-                
-                # update wanted_item
-                wanted_item.num = sum([a[1] for a in price_list])
-                wanted_item.highest_price = price_list[-1][0]
-                wanted_item.lowest_price = price_list[0][0]
-                wanted_item.avg_price = sum(sumed_price_list)/wanted_item.num
-                wanted_item.save()
-            else:
-                wanted_item.num = 0
-                wanted_item.highest_price = None
-                wanted_item.lowest_price = None
-                wanted_item.avg_price = None
-                wanted_item.save()
-                
+
+            # attach 'sum_price'
+            for item in items:
+                item.sum_price = item.price*item.num
+
+            wanted_item.num = sum([item.num for item in items])
+            wanted_item.highest_price = items.aggregate(Max('price'))['price__max']
+            wanted_item.lowest_price = items.aggregate(Min('price'))['price__min']
+            wanted_item.avg_price = sum([item.sum_price for item in items])/wanted_item.num if wanted_item.num else None
+            wanted_item.save()
+            
+            # catched item
             q = self.scrapy_item.storeitem_dj_set.filter(
                 item_id = wanted_item.base_item.pk,
                 price__lte = wanted_item.upper_price,
