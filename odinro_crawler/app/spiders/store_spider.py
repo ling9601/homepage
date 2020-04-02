@@ -101,30 +101,30 @@ class StoreSpider(scrapy.Spider):
         for wanted_item in wanted_items:
             
             # do some statistics
-            items = self.scrapy_item.storeitem_dj_set.filter(
+            store_items = self.scrapy_item.storeitem_dj_set.filter(
                 base_item = wanted_item.base_item,
                 level = wanted_item.level
             )
 
             # attach 'sum_price'
-            for item in items:
+            for item in store_items:
                 item.sum_price = item.price*item.num
 
-            wanted_item.num = sum([item.num for item in items])
-            wanted_item.highest_price = items.aggregate(Max('price'))['price__max']
-            wanted_item.lowest_price = items.aggregate(Min('price'))['price__min']
-            wanted_item.avg_price = sum([item.sum_price for item in items])/wanted_item.num if wanted_item.num else None
+            wanted_item.num = sum([item.num for item in store_items])
+            wanted_item.highest_price = store_items.aggregate(Max('price'))['price__max']
+            wanted_item.lowest_price = store_items.aggregate(Min('price'))['price__min']
+            wanted_item.avg_price = sum([item.sum_price for item in store_items])/wanted_item.num if wanted_item.num else None
             wanted_item.save()
             
             # catched item
-            q = self.scrapy_item.storeitem_dj_set.filter(
+            catched_store_items = self.scrapy_item.storeitem_dj_set.filter(
                 base_item = wanted_item.base_item,
                 price__lte = wanted_item.upper_price,
                 level__gte = wanted_item.level
             )
-            wanted_item.store_items.set(q)
+            wanted_item.store_items.set(catched_store_items)
 
-            catch_count += q.count()
+            catch_count += catched_store_items.count()
 
         spider.logger.info('catch_count({})'.format(catch_count))
         spider.logger.info('Time cost({:.2f})'.format(time.time()-start_time))
