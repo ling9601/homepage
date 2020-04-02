@@ -11,7 +11,7 @@ class ScrapyItem(models.Model):
     fail_num = models.IntegerField(default=0)
 
     def __str__(self):
-        return str(self.start_time) + '({})'.format(self.num_fail)
+        return str(self.start_time) + '({})'.format(self.fail_num)
 
 class BaseItem_dj(models.Model):
     # Database item
