@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, permission_required
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import CreateView, DeleteView
@@ -50,8 +50,9 @@ class WantedItemDeleteView(PermissionRequiredMixin,DeleteView):
     model = WantedItem
     success_url = reverse_lazy('crawler:index')
 
-class BaseItemDetailView(DeleteView):
+class BaseItemDetailView(PermissionRequiredMixin,DeleteView):
     model = BaseItem_dj
+    permission_required = 'crawler.view_baseitem_dj'
 
     def get_template_names(self):
         if 'modal' in self.kwargs:
@@ -82,7 +83,7 @@ class BaseItemDetailView(DeleteView):
         context['data'] = zip(max.index.values, max.values, mean.values, min.values)
 
         return context
-    
+
 def search(request):
     if request.method == 'GET':
         id = request.GET.get('id')
