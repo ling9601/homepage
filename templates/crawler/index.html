@@ -27,14 +27,32 @@
 .current a {
     color: red;
 }
+
+/* table */
+table th {
+   text-align: center; 
+}
 </style>
 
 {% endblock head %}
 
 {% block main %}
 <div class="container-fluid">
-    <a href="{% url 'crawler:create' %}" class="btn btn-info">Add</a>
-    <table class="table table-bordered">
+    <div class="row">
+        <div class="col-3">
+            <a href="{% url 'crawler:create' %}" class="btn btn-info">Add</a>
+        </div>
+
+        <div class="col=6">
+            <form action="{% url 'crawler:search' %}" method="get" id="searchform" class="input-group">
+                <input type="text" name="id" class="form-control" placeholder="物品ID" required>
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">查找</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <table class="table table-bordered text-center">
         <thead class="thead-dark">
           <tr>
             <th scope="col">道具ID</th>
@@ -47,6 +65,7 @@
             <th scope="col">最低价</th>
             <th scope="col">均价</th>
             <th scope="col">更新时间</th>
+            <th scope="col">价格走势</th>
             <th scope="col">删除</th>
           </tr>
         </thead>
@@ -73,6 +92,9 @@
                 <td>{{wanted_item.lowest_price|price2string}}</td>
                 <td>{{wanted_item.avg_price|price2string}}</td>
                 <td>{{wanted_item.time|date:"H:i n/d"}}</td>
+                <td>
+                    <a href="{% url 'crawler:detail' wanted_item.base_item.pk %}" class="btn btn-success">查看</a>
+                </td>
                 <td>
                     <form method="POST" action="{% url 'crawler:delete' wanted_item.pk %}">
                         {% csrf_token %}

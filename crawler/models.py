@@ -11,7 +11,7 @@ class ScrapyItem(models.Model):
     fail_num = models.IntegerField(default=0)
 
     def __str__(self):
-        return str(self.start_time) + '({})'.format(self.fail_num)
+        return str(self.start_time.date())
 
 class BaseItem_dj(models.Model):
     # Database item
@@ -80,18 +80,3 @@ class WantedItem(models.Model):
 
     def __str__(self):
         return self.base_item.__str__()
-
-# class CatchedItem(models.Model):
-#     wanted_item = models.ForeignKey(
-#         WantedItem,
-#         models.CASCADE,
-#     )
-#     store_item = models.OneToOneField(
-#         StoreItem_dj,
-#         models.CASCADE,
-#         primary_key=True,
-#     )
-#     time = models.DateTimeField(auto_now=True)
-
-#     def __str__(self):
-#         return self.wanted_item.base_item.__str__()

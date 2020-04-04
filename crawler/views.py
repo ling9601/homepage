@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import user_passes_test
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -13,6 +13,9 @@ from .models import *
 
 import requests
 import json
+import datetime
+from django_pandas.io import read_frame
+import pytz
 
 # Create your views here.
 
@@ -31,11 +34,8 @@ def get_log(request, id):
 class WantedItemIndexVIew(PermissionRequiredMixin,ListViewPaginator):
     permission_required = 'crawler.view_wanteditem'
     model = WantedItem
-    
     template_name = 'crawler/index.html'
-
     context_object_name = 'wanted_item_list'
-
     paginate_by = 20
 
 class WantedItemCreateView(PermissionRequiredMixin,CreateView):
@@ -49,3 +49,44 @@ class WantedItemDeleteView(PermissionRequiredMixin,DeleteView):
     permission_required = 'crawler.delete_wanteditem'
     model = WantedItem
     success_url = reverse_lazy('crawler:index')
+
+class BaseItemDetailView(DeleteView):
+    model = BaseItem_dj
+
+    def get_template_names(self):
+        if 'modal' in self.kwargs:
+            return ['crawler/baseitem_dj_modal.html']
+        else:
+            return ['crawler/baseitem_dj_detail.html']
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        now = datetime.datetime.now(tz=pytz.timezone('Asia/Tokyo'))
+
+        query = StoreItem_dj.objects.filter(
+            base_item = self.object,
+            scrapy_item__start_time__lte = now,
+            scrapy_item__start_time__gt = now-datetime.timedelta(days=3),
+        )
+        if not query:
+            context['data'] = None
+            return context
+        f = read_frame(query)
+        f = f[['price','num','scrapy_item']]
+        max = f.groupby('scrapy_item').max()['price']
+        min = f.groupby('scrapy_item').min()['price']
+        f['price_total'] = f['price'] * f['num']
+        mean = f.drop(['price'],axis=1).groupby(['scrapy_item']).sum()
+        mean = mean['price_total']/mean['num']
+        
+        context['data'] = zip(max.index.values, max.values, mean.values, min.values)
+
+        return context
+    
+def search(request):
+    if request.method == 'GET':
+        id = request.GET.get('id')
+        if id.isdigit() and BaseItem_dj.objects.filter(pk=int(id)):
+            return HttpResponseRedirect(reverse_lazy('crawler:detail',kwargs={'pk':int(id)}))
+        else:
+            return render(request, 'crawler/error.html', context={'error_message':'ID不存在'})
