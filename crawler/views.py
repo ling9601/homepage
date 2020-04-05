@@ -38,7 +38,7 @@ class WantedItemIndexVIew(PermissionRequiredMixin,ListViewPaginator):
     model = WantedItem
     template_name = 'crawler/index.html'
     context_object_name = 'wanted_item_list'
-    paginate_by = 20
+    paginate_by = 50
 
     def get_queryset(self):
         return super(WantedItemIndexVIew, self).get_queryset().filter(
