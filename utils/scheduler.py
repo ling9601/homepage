@@ -20,7 +20,7 @@ def job():
         return
     send_request()
 
-schedule.every(15).minutes.do(job)
+schedule.every(10).minutes.do(job)
 schedule.run_all()
 
 while True:

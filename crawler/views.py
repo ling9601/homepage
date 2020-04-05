@@ -1,11 +1,13 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import user_passes_test, permission_required
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.views.generic import CreateView, DeleteView
+from django.views.generic import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 
-from .form import WantedItemCreateForm
+
+from .form import *
 
 from blog.views import ListViewPaginator
 
@@ -38,17 +40,37 @@ class WantedItemIndexVIew(PermissionRequiredMixin,ListViewPaginator):
     context_object_name = 'wanted_item_list'
     paginate_by = 20
 
+    def get_queryset(self):
+        return super(WantedItemIndexVIew, self).get_queryset().filter(
+            created_by = self.request.user,
+        )
+
 class WantedItemCreateView(PermissionRequiredMixin,CreateView):
     permission_required = 'crawler.add_wanteditem'
     model = WantedItem
-    template_name = 'crawler/create.html'
     success_url = reverse_lazy('crawler:create')
-    form_class = WantedItemCreateForm
+    form_class = WantedItemForm
 
-class WantedItemDeleteView(PermissionRequiredMixin,DeleteView):
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+
+class WantedItemUpdateView(PermissionRequiredMixin,UserPassesTestMixin,UpdateView):
+    permission_required = 'crawler.change_wanteditem'
+    model = WantedItem
+    success_url = reverse_lazy('crawler:index')
+    form_class = WantedItemForm
+
+    def test_func(self):
+        return self.get_object().created_by == self.request.user
+    
+class WantedItemDeleteView(PermissionRequiredMixin,UserPassesTestMixin,DeleteView):
     permission_required = 'crawler.delete_wanteditem'
     model = WantedItem
     success_url = reverse_lazy('crawler:index')
+
+    def test_func(self):
+        return self.get_object().created_by == self.request.user
 
 class BaseItemDetailView(PermissionRequiredMixin,DeleteView):
     model = BaseItem_dj
@@ -67,7 +89,7 @@ class BaseItemDetailView(PermissionRequiredMixin,DeleteView):
         query = StoreItem_dj.objects.filter(
             base_item = self.object,
             scrapy_item__start_time__lte = now,
-            scrapy_item__start_time__gt = now-datetime.timedelta(days=3),
+            scrapy_item__start_time__gt = now-datetime.timedelta(days=30),
         )
         if not query:
             context['data'] = None

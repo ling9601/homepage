@@ -1,7 +1,7 @@
 from django import forms
 from .models import WantedItem
 
-class WantedItemCreateForm(forms.ModelForm):
+class WantedItemForm(forms.ModelForm):
     class Meta(object):
         model = WantedItem
         fields = ['base_item', 'upper_price', 'level']

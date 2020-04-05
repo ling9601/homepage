@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import User
 
 class ScrapyItem(models.Model):
     class Meta:
@@ -60,6 +61,10 @@ class StoreItem_dj(models.Model):
         return self.base_item.__str__()
 
 class WantedItem(models.Model):
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
     base_item = models.ForeignKey(
         BaseItem_dj,
         on_delete=models.CASCADE,
