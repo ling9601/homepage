@@ -44,8 +44,7 @@ class WantedItemIndexVIew(PermissionRequiredMixin,ListViewPaginator):
         return super(WantedItemIndexVIew, self).get_queryset().filter(
             created_by = self.request.user,
         ).annotate(num_storeitem=Count('store_items')) \
-        .order_by('base_item__name') \
-        .order_by('-num_storeitem')
+        .order_by('-num_storeitem', 'base_item__item_id')
 
 class WantedItemCreateView(PermissionRequiredMixin,CreateView):
     permission_required = 'crawler.add_wanteditem'
