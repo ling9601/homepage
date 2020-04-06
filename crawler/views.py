@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
-
+from django.db.models import Count
 
 from .form import *
 
@@ -43,7 +43,9 @@ class WantedItemIndexVIew(PermissionRequiredMixin,ListViewPaginator):
     def get_queryset(self):
         return super(WantedItemIndexVIew, self).get_queryset().filter(
             created_by = self.request.user,
-        )
+        ).annotate(num_storeitem=Count('store_items')) \
+        .order_by('base_item__name') \
+        .order_by('-num_storeitem')
 
 class WantedItemCreateView(PermissionRequiredMixin,CreateView):
     permission_required = 'crawler.add_wanteditem'
