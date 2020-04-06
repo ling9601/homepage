@@ -65,6 +65,55 @@
             </form>
         </div>
     </div>
+    {% for wanted_item in wanted_item_list %}
+    {% if wanted_item.store_items.all %}
+    <div class="row justify-content-md-center">
+        <div class="collapse multi-collapse col-md-12" id="multi{{wanted_item.pk}}">
+        <div class="card">
+            <h5 class="card-header">{{wanted_item.base_item.name}}</h5>
+            <div class="card card-body">
+                <table class="table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">商店名称</th>
+                            <th scope="col">坐标信息</th>
+                            <th scope="col">卡槽1</th>
+                            <th scope="col">卡槽2</th>
+                            <th scope="col">卡槽3</th>
+                            <th scope="col">卡槽4</th>
+                            <th scope="col">数量</th>
+                            <th scope="col">单价</th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        {% for store_item in wanted_item.store_items.all %}
+                        <tr>
+                            <td>
+                                <a href="https://odinro.online/vending/viewshop/?id={{store_item.store_id}}" target="_blank">{{store_item.store_name}}</a>
+                            </td>
+                            <td>{{store_item.position}}</td>
+                            <td>{{store_item.hole_1}}</td>
+                            <td>{{store_item.hole_2}}</td>
+                            <td>{{store_item.hole_3}}</td>
+                            <td>{{store_item.hole_4}}</td>
+                            <td>{{store_item.num}}</td>
+                            <td>{{store_item.price}}</td>
+                        </tr>
+                        {% empty %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        </div>
+    </div>
+    {% else %}
+    {% endif %}
+{% empty %}
+{% endfor %}
     <div class="row justify-content-center text-center">
         <div class="col-auto">
             <table class="table table-bordered table-responsive">
@@ -129,55 +178,7 @@
         </div>
     </div>
 
-    {% for wanted_item in wanted_item_list %}
-        {% if wanted_item.store_items.all %}
-        <div class="row justify-content-md-center">
-            <div class="collapse multi-collapse col-md-12" id="multi{{wanted_item.pk}}">
-            <div class="card">
-                <h5 class="card-header">{{wanted_item.base_item.name}}</h5>
-                <div class="card card-body">
-                    <table class="table-bordered">
-                        <thead class="thead-light">
-                            <tr>
-                                <th scope="col">商店名称</th>
-                                <th scope="col">坐标信息</th>
-                                <th scope="col">卡槽1</th>
-                                <th scope="col">卡槽2</th>
-                                <th scope="col">卡槽3</th>
-                                <th scope="col">卡槽4</th>
-                                <th scope="col">数量</th>
-                                <th scope="col">单价</th>
-                            </tr>
-    
-                        </thead>
-                        <tbody>
-                            {% for store_item in wanted_item.store_items.all %}
-                            <tr>
-                                <td>
-                                    <a href="https://odinro.online/vending/viewshop/?id={{store_item.store_id}}" target="_blank">{{store_item.store_name}}</a>
-                                </td>
-                                <td>{{store_item.position}}</td>
-                                <td>{{store_item.hole_1}}</td>
-                                <td>{{store_item.hole_2}}</td>
-                                <td>{{store_item.hole_3}}</td>
-                                <td>{{store_item.hole_4}}</td>
-                                <td>{{store_item.num}}</td>
-                                <td>{{store_item.price}}</td>
-                            </tr>
-                            {% empty %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-    
-                </div>
-            </div>
 
-            </div>
-        </div>
-        {% else %}
-        {% endif %}
-    {% empty %}
-    {% endfor %}
 
     {% if is_paginated %}
 
