@@ -4,7 +4,7 @@
 
 
 {% block head %}
-<meta http-equiv="refresh" content="30; URL={% url 'crawler:index' %}">
+<meta http-equiv="refresh" content="60; URL={% url 'crawler:index' %}">
 
 <style>
 /**
@@ -59,7 +59,13 @@
 
         <div class="col-auto">
             <form action="{% url 'crawler:search' %}" method="get" id="searchform" class="input-group">
-                <input type="text" name="id" class="form-control" placeholder="物品ID" required>
+                <select name="id" class="selectpicker form-control" data-live-search="true" required>
+                    <option value="" selected>---------</option>
+                    {% for base_item in base_items %}
+                    <option value="{{base_item.pk}}">{{base_item}}</option>
+                    {% empty %}
+                    {% endfor %}
+                </select>
                 <div class="input-group-append">
                     <button class="btn btn-primary" type="submit">查找</button>
                 </div>

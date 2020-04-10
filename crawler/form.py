@@ -17,5 +17,4 @@ class WantedItemForm(forms.ModelForm):
                 attrs={'class': 'form-control'},
                 choices=[(i,i) for i in range(11)],
             ),
-
         }
