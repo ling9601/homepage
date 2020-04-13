@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
+
+from home.utils import Code2Token
 
 
 def index(request):
@@ -17,6 +19,10 @@ def add(request):
 
 def debug(request):
     return render(request, 'home/debug.html')
+
+def get_token(request,code):
+    if request.method == 'GET':
+        return HttpResponse(Code2Token(code))
 
 
 # Create your views here.
